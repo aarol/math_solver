@@ -1,6 +1,9 @@
 # math_solver
 
-A new Flutter package project.
+Solves an mathematical expression from a string.
+
+Use this package when creating a calculator app. 
+It solves basic operations, but also functions like square root.
 
 ## Getting Started
 

@@ -1,8 +1,8 @@
 name: math_solver
-description: A new Flutter package project.
-version: 0.0.1
-author: null
-homepage: null
+description: A math solver package.
+version: 0.1.0
+author: aaro.luo
+homepage: https://github.com/aaroluo/math_solver
 
 environment:
   sdk: ">=2.7.0 <3.0.0"

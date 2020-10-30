@@ -27,7 +27,7 @@ Function stringToOperator(String token) {
     case '^':
       return power;
   }
-  throw Exception('Token operator not found: $token');
+  throw Exception('Operator not found: $token');
 }
 
 Function stringToFunction(String token) {
@@ -41,5 +41,5 @@ Function stringToFunction(String token) {
     case 'tan':
       return tan;
   }
-  throw Exception('Token function not found: $token');
+  throw Exception('Function not found: $token');
 }
