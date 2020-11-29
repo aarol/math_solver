@@ -2,7 +2,7 @@ part of math_solver;
 
 const _degToRad = 0.0174532925;
 
-num plus(a, b) => b + a;
+num plus(double a, double b) => b + a;
 num minus(a, b) => b - a;
 num multiply(a, b) => b * a;
 num divide(a, b) => b / a;

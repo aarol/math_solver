@@ -3,8 +3,8 @@ part of math_solver;
 class Token extends Equatable {
   const Token(this.value, {this.precedence, this.associativity});
   final String value;
-  final int precedence;
-  final String associativity;
+  final int? precedence;
+  final String? associativity;
 
   //Equatable override for equality
   //Allows comparing Tokens by only the value string.

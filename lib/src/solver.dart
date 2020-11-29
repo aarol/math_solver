@@ -19,7 +19,7 @@ part of math_solver;
 *
 **/
 abstract class Solver {
-  static String solve(String input, [Map<String, dynamic> valuesToRemap]) {
+  static String solve(String input, [Map<String, dynamic>? valuesToRemap]) {
     var cleanInput = input;
 
     //Uses a HashMap to iterate through the entries only once
@@ -172,7 +172,7 @@ abstract class Solver {
 
   static bool _shouldPop(Token token, Token last) {
     return (last != Token('(') &&
-        (token.precedence < last.precedence ||
+        (token.precedence! < last.precedence! ||
             (token.precedence == last.precedence &&
                 token.associativity == Token.assocLeft)));
   }
@@ -183,7 +183,7 @@ abstract class Solver {
     for (var i = 0; i < list.length; i++) {
       var token = list[i];
       if (token.isNum) {
-        resultStack.push(token.parseDouble());
+        resultStack.push(token.parseDouble()!);
         //jos token on funktio
       } else if (token.isFunc) {
         var operation = stringToFunction(token);

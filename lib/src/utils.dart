@@ -5,7 +5,7 @@ extension StringExt on String {
     return double.tryParse(this) is double;
   }
 
-  double parseDouble() {
+  double? parseDouble() {
     return double.tryParse(this);
   }
 
