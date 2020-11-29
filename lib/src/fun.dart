@@ -1,4 +1,3 @@
-//Funktiot
 part of math_solver;
 
 const _degToRad = 0.0174532925;
