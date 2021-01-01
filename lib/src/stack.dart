@@ -1,4 +1,4 @@
-part of math_solver;
+import 'dart:collection';
 
 class Stack<T> {
   final ListQueue<T> _list = ListQueue();

@@ -1,4 +1,5 @@
-part of math_solver;
+
+import 'token.dart';
 
 extension StringExt on String {
   bool get isNum {

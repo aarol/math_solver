@@ -1,4 +1,4 @@
-part of math_solver;
+import 'package:equatable/equatable.dart';
 
 class Token extends Equatable {
   const Token(this.value, {this.precedence, this.associativity});

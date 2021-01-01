@@ -1,4 +1,4 @@
-part of math_solver;
+import 'dart:math' as math;
 
 const _degToRad = 0.0174532925;
 

@@ -1,4 +1,9 @@
-part of math_solver;
+import 'dart:collection';
+
+import 'utils.dart';
+import 'stack.dart';
+import 'token.dart';
+import 'fun.dart';
 
 /**Solves an mathematical expression.
 * 
