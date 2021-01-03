@@ -3,7 +3,7 @@ import 'package:test/test.dart';
 
 void main() {
   group('temp', () {
-    print(Solver.solve('5-(9+5)'));
+    print(solve('5-(9+5)'));
   });
   group('solver unit test', () {
     var testValues = {
@@ -15,7 +15,7 @@ void main() {
     };
     for (var entry in testValues.entries) {
       test(entry.key, () {
-        expect(Solver.solve(entry.key), entry.value);
+        expect(solve(entry.key), entry.value);
       });
     }
   });
@@ -30,7 +30,7 @@ void main() {
     };
     for (var entry in testValues.entries) {
       test(entry.key, () {
-        expect(Solver.format(entry.key), entry.value);
+        expect(format(entry.key), entry.value);
       });
     }
   });
