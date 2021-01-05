@@ -12,6 +12,7 @@ void main() {
       '2*sqrt(9)': '6',
       '3+4*2/(1-5)^2^3': '3.0001220703125',
       '((10-4*2)^3)^2': '64',
+      '(2*sin(90))^2': '4'
     };
     for (var entry in testValues.entries) {
       test(entry.key, () {
