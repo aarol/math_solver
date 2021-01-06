@@ -1,5 +1,4 @@
 import 'package:equatable/equatable.dart';
-import 'package:math_solver/src/error.dart';
 import 'dart:math';
 
 enum _Obj {
@@ -116,8 +115,10 @@ class Op extends Obj {
           print('$b ^ $a');
           return pow(b, a);
         default:
+          return 0;
       }
     }
+    throw Exception('$first or $second is not a valid number');
   }
 
   @override
@@ -129,20 +130,23 @@ class Op extends Obj {
 class Fun extends Obj {
   const Fun(this.function) : super(_Obj.Fun);
   final Function function;
-  double run(a) {
-    switch (function) {
-      case Function.SquareRoot:
-        print('sqrt($a)');
-        return sqrt(a);
-      case Function.Sin:
-        print('sin($a)');
-        return sin(a);
-      case Function.Cos:
-        print('cos($a)');
-        return cos(a);
-      case Function.Tan:
-        print('tan($a)');
-        return tan(a);
+  double run(Obj first) {
+    if (first is Num) {
+     var a = first.value;
+      switch (function) {
+        case Function.SquareRoot:
+          print('sqrt($a)');
+          return sqrt(a);
+        case Function.Sin:
+          print('sin($a)');
+          return sin(a);
+        case Function.Cos:
+          print('cos($a)');
+          return cos(a);
+        case Function.Tan:
+          print('tan($a)');
+          return tan(a);
+      }
     }
     return 0;
   }

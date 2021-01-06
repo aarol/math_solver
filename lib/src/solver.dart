@@ -1,5 +1,6 @@
 import 'enum.dart';
 import 'error.dart';
+part 'utils.dart';
 
 double solve(String input) {
   print('input: $input');
@@ -27,22 +28,7 @@ List<Obj> convertString(String input) {
     if (parsedNum != null) {
       obj = Num(parsedNum);
     } else {
-      switch (stack.join()) {
-        case 'sqrt':
-          obj = Fun(Function.SquareRoot);
-          break;
-        case 'sin':
-          obj = Fun(Function.Sin);
-          break;
-        case 'cos':
-          obj = Fun(Function.Cos);
-          break;
-        case 'tan':
-          obj = Fun(Function.Tan);
-          break;
-        default:
-          obj = Undefined();
-      }
+      obj = _functionFromString(stack.join());
     }
     stack.clear();
     res.add(obj);
@@ -72,31 +58,7 @@ List<Obj> convertString(String input) {
     } else {
       clear();
       Obj obj;
-      switch (char) {
-        case '(':
-          obj = ParL();
-          break;
-        case ')':
-          obj = ParR();
-          break;
-        case '-':
-          obj = Op(Operator.Substract);
-          break;
-        case '+':
-          obj = Op(Operator.Add);
-          break;
-        case '*':
-          obj = Op(Operator.Multiply);
-          break;
-        case '/':
-          obj = Op(Operator.Divide);
-          break;
-        case '^':
-          obj = Op(Operator.Exponent);
-          break;
-        default:
-          obj = Undefined();
-      }
+      obj = _operatorFromString(char);
       res.add(obj);
     }
   }
@@ -105,8 +67,8 @@ List<Obj> convertString(String input) {
 }
 
 List<Obj> infixToPostfix(List<Obj> input) {
-  List<Obj> output = [];
-  List<Obj> operatorStack = [];
+  var output = <Obj>[];
+  var operatorStack = <Obj>[];
 
   for (final token in input) {
     token.when(num: (_) {
@@ -124,9 +86,11 @@ List<Obj> infixToPostfix(List<Obj> input) {
     }, fun: (_) {
       operatorStack.add(token);
     }, parL: () {
+      operatorStack.add(token);
+    }, parR: () {
       var found = false;
       while (operatorStack.isNotEmpty) {
-        if (operatorStack.last != ParL) {
+        if (operatorStack.last != ParL()) {
           output.add(operatorStack.removeLast());
         } else {
           operatorStack.removeLast();
