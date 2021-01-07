@@ -160,13 +160,13 @@ class Fun extends Obj {
 class ParL extends Obj {
   const ParL() : super(_Obj.ParL);
   @override
-  String toString() => '(';
+  String toString() => 'Par(';
 }
 
 class ParR extends Obj {
   const ParR() : super(_Obj.ParR);
   @override
-  String toString() => ')';
+  String toString() => 'Par)';
 }
 
 class Undefined extends Obj {

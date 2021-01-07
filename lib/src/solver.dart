@@ -4,12 +4,18 @@ part 'utils.dart';
 
 double solve(String input) {
   print('input: $input');
+
   var objs = convertString(input);
   print('objs: $objs');
-  var postfix = infixToPostfix(objs);
+  var clean = cleanInput(objs);
+  print('clean: $clean');
+
+  var postfix = infixToPostfix(clean);
   print('objs: $postfix');
+
   var res = evaluate(postfix);
   print('res: $res');
+
   return res;
 }
 
@@ -66,6 +72,27 @@ List<Obj> convertString(String input) {
   return res;
 }
 
+List<Obj> cleanInput(List<Obj> input) {
+  for (var i = 0; i < input.length; i++) {
+    if (i == 0) {
+      //Remove '-' at start of input and reverse value
+      if (input[0] == Op(Operator.Substract)) {
+        var val = Num(-(input[1] as Num).value);
+        input[1] = val;
+        input.removeAt(0);
+        //Remove `+` at start of input
+      } else if (input[0] == Op(Operator.Add)) {
+        input.remove(0);
+      }
+    } else {
+      if (input[i - 1] is Num && input[i] is ParL) {
+        input.insert(i, Op(Operator.Multiply));
+      }
+    }
+  }
+  return input;
+}
+
 List<Obj> infixToPostfix(List<Obj> input) {
   var output = <Obj>[];
   var operatorStack = <Obj>[];
@@ -116,7 +143,7 @@ List<Obj> infixToPostfix(List<Obj> input) {
 }
 
 double evaluate(List<Obj> input) {
-  List<Obj> resultStack = [];
+  var resultStack = <Obj>[];
   for (final token in input) {
     token.when(num: (val) {
       resultStack.add(token);
@@ -139,13 +166,15 @@ double evaluate(List<Obj> input) {
   }
 }
 
-bool _shouldPop(Op op, Obj last) {
+bool _shouldPop(Op operator, Obj last) {
   if (last == ParL()) {
     return false;
   }
-  last.when(op: (last) {
-    return op.precedence < last.precedence ||
-        (op.precedence == last.precedence && op.assoc == Assoc.Left);
-  });
-  throw InvalidOperatorException([op, last]);
+  if (last is! Op) {
+    throw InvalidOperatorException([operator, last]);
+  }
+  var last_op = last as Op;
+  return operator.precedence < last_op.precedence ||
+      (operator.precedence == last_op.precedence &&
+          operator.assoc == Assoc.Left);
 }
