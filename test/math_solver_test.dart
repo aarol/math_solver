@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:math_solver/math_solver.dart';
 import 'package:math_solver/src/enum.dart';
+import 'package:math_solver/src/format.dart';
 import 'package:test/test.dart';
 
 void main() {
@@ -20,7 +21,7 @@ void main() {
     });
     test('2π', () {
       var input = '2π';
-      var res = 2*pi;
+      var res = 2 * pi;
       expect(solve(input), res);
     });
   });
@@ -40,17 +41,21 @@ void main() {
   });
   group('format output', () {
     var testValues = {
-      '1633418654': '1 633 418 654',
-      '31415': '31 415',
-      '155': '155',
-      '0.04': '0.04',
-      '2000.04': '2 000.04',
-      '164534.0006534': '164 534.0006534',
+      1633418654.0: '1 633 418 654',
+      31415.0: '31 415',
+      155.0: '155',
+      0.04: '0.04',
+      2000.04: '2000.04',
     };
     for (var entry in testValues.entries) {
       test(entry.key, () {
-        // expect(format(entry.key), entry.value);
+        expect(format(entry.key), entry.value);
       });
     }
+  });
+  group('format test test', () {
+    test('test', () {
+      format(6343);
+    });
   });
 }
