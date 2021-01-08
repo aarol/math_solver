@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'enum.dart';
 import 'error.dart';
 part 'utils.dart';
@@ -61,6 +63,9 @@ List<Obj> convertString(String input) {
     }
     if (numReg.hasMatch(char) || 'sqrtinatc'.contains(char)) {
       addStack(char);
+    } else if (char == 'π') {
+      clear();
+      res.add(Num(pi));
     } else {
       clear();
       Obj obj;
@@ -76,16 +81,23 @@ List<Obj> cleanInput(List<Obj> input) {
   for (var i = 0; i < input.length; i++) {
     if (i == 0) {
       //Remove '-' at start of input and reverse value
+      //- 2 + 5 -> -2 + 5
       if (input[0] == Op(Operator.Substract)) {
         var val = Num(-(input[1] as Num).value);
         input[1] = val;
         input.removeAt(0);
-        //Remove `+` at start of input
+        //+ 2 + 5 -> 2 + 5
       } else if (input[0] == Op(Operator.Add)) {
         input.remove(0);
       }
     } else {
+      //2( -> 2*(
       if (input[i - 1] is Num && input[i] is ParL) {
+        input.insert(i, Op(Operator.Multiply));
+      }
+      // 2π -> 2*π
+      // only happens with pi
+      if (input[i-1] is Num && input[i] == Num(pi)) {
         input.insert(i, Op(Operator.Multiply));
       }
     }

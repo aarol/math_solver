@@ -1,6 +1,8 @@
+import 'dart:math';
+
 import 'package:math_solver/math_solver.dart';
-import 'package:test/test.dart';
 import 'package:math_solver/src/enum.dart';
+import 'package:test/test.dart';
 
 void main() {
   group('object parse test', () {
@@ -15,6 +17,11 @@ void main() {
         Num(17.0)
       ];
       expect(convertString(input), res);
+    });
+    test('2π', () {
+      var input = '2π';
+      var res = 2*pi;
+      expect(solve(input), res);
     });
   });
   group('solver unit test', () {
