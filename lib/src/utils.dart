@@ -1,20 +1,37 @@
+part of 'solver.dart';
 
-import 'token.dart';
-
-extension StringExt on String {
-  bool get isNum {
-    return double.tryParse(this) is double;
+Obj _functionFromString(String input) {
+  switch (input) {
+    case 'sqrt':
+      return Fun(Function.SquareRoot);
+    case 'sin':
+      return Fun(Function.Sin);
+    case 'cos':
+      return Fun(Function.Cos);
+    case 'tan':
+      return Fun(Function.Tan);
+    default:
+      return Undefined();
   }
+}
 
-  double? parseDouble() {
-    return double.tryParse(this);
-  }
-
-  bool get isOperator {
-    return Token.operators.contains(Token(this));
-  }
-
-  bool get isFunc {
-    return Token.functions.contains(Token(this));
+Obj _operatorFromString(String char) {
+  switch (char) {
+    case '(':
+      return ParL();
+    case ')':
+      return ParR();
+    case '-':
+      return Op(Operator.Substract);
+    case '+':
+      return Op(Operator.Add);
+    case '*':
+      return Op(Operator.Multiply);
+    case '/':
+      return Op(Operator.Divide);
+    case '^':
+      return Op(Operator.Exponent);
+    default:
+      return Undefined();
   }
 }
