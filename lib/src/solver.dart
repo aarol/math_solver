@@ -5,20 +5,23 @@ import 'error.dart';
 part 'utils.dart';
 
 double solve(String input) {
-  print('input: $input');
-
-  var objs = convertString(input);
-  print('objs: $objs');
-  var clean = cleanInput(objs);
-  print('clean: $clean');
-
-  var postfix = infixToPostfix(clean);
-  print('objs: $postfix');
-
-  var res = evaluate(postfix);
-  print('res: $res');
-
-  return res;
+  var debugString = '';
+  try {
+    var objs = convertString(input);
+    debugString += 'converted to objs: $objs \n';
+    var clean = cleanInput(objs);
+    debugString += 'cleaned: $clean \n';
+    var postfix = infixToPostfix(clean);
+    debugString += 'in postfix: $postfix \n';
+    var res = evaluate(postfix);
+    debugString += 'result: $res \n';
+    return res;
+  } catch (e) {
+    throw SolverException(e, '''
+      Debug information: \n
+      $debugString
+      ''');
+  }
 }
 
 List<Obj> convertString(String input) {
@@ -61,7 +64,7 @@ List<Obj> convertString(String input) {
       clear();
       continue;
     }
-    if (numReg.hasMatch(char) || 'sqrtinatc'.contains(char)) {
+    if (numReg.hasMatch(char) || 'sqrtinoatc'.contains(char)) {
       addStack(char);
     } else if (char == 'π') {
       clear();
@@ -97,7 +100,11 @@ List<Obj> cleanInput(List<Obj> input) {
       }
       // 2π -> 2*π
       // only happens with pi
-      if (input[i-1] is Num && input[i] == Num(pi)) {
+      if (input[i - 1] is Num && input[i] == Num(pi)) {
+        input.insert(i, Op(Operator.Multiply));
+      }
+      // 2sqrt(9) -> 2*sqrt(9)
+      if (input[i - 1] is Num && input[i] is Fun) {
         input.insert(i, Op(Operator.Multiply));
       }
     }
@@ -141,7 +148,7 @@ List<Obj> infixToPostfix(List<Obj> input) {
         throw MissingParenthesisException(ParL());
       }
     }, undefined: () {
-      print('undefined object');
+      throw Exception('Undefined object: $token');
     });
   }
   while (operatorStack.isNotEmpty) {

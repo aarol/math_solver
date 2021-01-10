@@ -100,19 +100,19 @@ class Op extends Obj {
       var b = second.value;
       switch (operator) {
         case Operator.Add:
-          print('$b + $a');
+          // print('$b + $a');
           return b + a;
         case Operator.Substract:
-          print('$b - $a');
+          // print('$b - $a');
           return b - a;
         case Operator.Multiply:
-          print('$b * $a');
+          // print('$b * $a');
           return b * a;
         case Operator.Divide:
-          print('$b / $a');
+          // print('$b / $a');
           return b / a;
         case Operator.Exponent:
-          print('$b ^ $a');
+          // print('$b ^ $a');
           return pow(b, a);
         default:
           return 0;
@@ -132,19 +132,19 @@ class Fun extends Obj {
   final Function function;
   double run(Obj first) {
     if (first is Num) {
-     var a = first.value;
+      var a = first.value;
       switch (function) {
         case Function.SquareRoot:
-          print('sqrt($a)');
+          // print('sqrt($a)');
           return sqrt(a);
         case Function.Sin:
-          print('sin($a)');
+          // print('sin($a)');
           return sin(a);
         case Function.Cos:
-          print('cos($a)');
+          // print('cos($a)');
           return cos(a);
         case Function.Tan:
-          print('tan($a)');
+          // print('tan($a)');
           return tan(a);
       }
     }
@@ -170,7 +170,8 @@ class ParR extends Obj {
 }
 
 class Undefined extends Obj {
-  const Undefined() : super(_Obj.Undefined);
+  const Undefined(this.from) : super(_Obj.Undefined);
+  final String from;
   @override
-  String toString() => 'Undefined()';
+  String toString() => 'Undefined($from)';
 }

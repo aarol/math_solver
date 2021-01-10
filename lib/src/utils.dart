@@ -11,7 +11,7 @@ Obj _functionFromString(String input) {
     case 'tan':
       return Fun(Function.Tan);
     default:
-      return Undefined();
+      return Undefined(input);
   }
 }
 
@@ -32,6 +32,6 @@ Obj _operatorFromString(String char) {
     case '^':
       return Op(Operator.Exponent);
     default:
-      return Undefined();
+      return Undefined(char);
   }
 }

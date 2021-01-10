@@ -2,7 +2,6 @@ import 'dart:math';
 
 import 'package:math_solver/math_solver.dart';
 import 'package:math_solver/src/enum.dart';
-import 'package:math_solver/src/format.dart';
 import 'package:test/test.dart';
 
 void main() {
