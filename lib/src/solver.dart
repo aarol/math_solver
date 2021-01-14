@@ -8,7 +8,7 @@ double solve(String input) {
   var debugString = StringBuffer();
   try {
     var objs = convertString(input);
-    debugString.writeln('converted to objs: $objs');
+    debugString.write('converted to objs: $objs');
     var clean = cleanInput(objs);
     debugString.writeln('cleaned: $clean \n');
     var postfix = infixToPostfix(clean);
@@ -17,9 +17,7 @@ double solve(String input) {
     debugString.writeln('result: $res \n');
     return res;
   } catch (e) {
-    throw SolverException(e, '''Debug information: \n
-      $debugString
-      ''');
+    throw SolverException(e, 'Debug information: \n $debugString');
   }
 }
 
