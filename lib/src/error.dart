@@ -1,12 +1,5 @@
 import 'enum.dart';
 
-class InvalidOperatorException implements Exception {
-  const InvalidOperatorException(this.objs);
-  final List<Obj> objs;
-  @override
-  String toString() => 'Invalid operator: $objs';
-}
-
 class SolverException {
   final dynamic e;
   final String debugInfo;
@@ -14,6 +7,13 @@ class SolverException {
 
   @override
   String toString() => 'SolverException: $e \n $debugInfo';
+}
+
+class InvalidOperatorException implements Exception {
+  const InvalidOperatorException(this.objs);
+  final List<Obj> objs;
+  @override
+  String toString() => 'Invalid operator: $objs';
 }
 
 class MissingParenthesisException implements Exception {

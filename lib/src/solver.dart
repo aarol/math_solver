@@ -2,19 +2,21 @@ import 'dart:math';
 
 import 'enum.dart';
 import 'error.dart';
-part 'utils.dart';
+import 'utils.dart';
 
 double solve(String input) {
   var debugString = StringBuffer();
   try {
     var objs = convertString(input);
-    debugString.write('converted to objs: $objs');
+    debugString.writeln('converted to objs: $objs');
     var clean = cleanInput(objs);
-    debugString.writeln('cleaned: $clean \n');
+    if (clean != objs) {
+      debugString.writeln('cleaned: $clean');
+    }
     var postfix = infixToPostfix(clean);
-    debugString.writeln('in postfix: $postfix \n');
+    debugString.writeln('in postfix: $postfix');
     var res = evaluate(postfix);
-    debugString.writeln('result: $res \n');
+    debugString.write('result: $res');
     return res;
   } catch (e) {
     throw SolverException(e, 'Debug information: \n $debugString');
@@ -26,6 +28,7 @@ List<Obj> convertString(String input) {
   var stack = <String>[];
 
   final numReg = RegExp('[0-9.]');
+  final alphaReg = RegExp('[a-z]');
 
   void clear() {
     if (stack.isEmpty) {
@@ -36,7 +39,7 @@ List<Obj> convertString(String input) {
     if (parsedNum != null) {
       obj = Num(parsedNum);
     } else {
-      obj = _functionFromString(stack.join());
+      obj = functionFromString(stack.join());
     }
     stack.clear();
     res.add(obj);
@@ -61,7 +64,7 @@ List<Obj> convertString(String input) {
       clear();
       continue;
     }
-    if (numReg.hasMatch(char) || 'sqrtinoatc'.contains(char)) {
+    if (numReg.hasMatch(char) || alphaReg.hasMatch(char)) {
       addStack(char);
     } else if (char == 'π') {
       clear();
@@ -69,7 +72,7 @@ List<Obj> convertString(String input) {
     } else {
       clear();
       Obj obj;
-      obj = _operatorFromString(char);
+      obj = operatorFromString(char);
       res.add(obj);
     }
   }
@@ -96,7 +99,7 @@ List<Obj> cleanInput(List<Obj> input) {
         input.insert(i, Op(Operator.Multiply));
       }
       // 2π -> 2*π
-      // only happens with pi
+      // should only happen with pi
       if (input[i - 1] is Num && input[i] == Num(pi)) {
         input.insert(i, Op(Operator.Multiply));
       }
@@ -109,6 +112,12 @@ List<Obj> cleanInput(List<Obj> input) {
   return input;
 }
 
+///Shunting-yard algorithm
+///
+///https://en.wikipedia.org/wiki/Shunting-yard_algorithm
+///
+///turns infix ( 3*(2+1) ) to postfix ( 321+* )
+///
 List<Obj> infixToPostfix(List<Obj> input) {
   var output = <Obj>[];
   var operatorStack = <Obj>[];
@@ -125,6 +134,7 @@ List<Obj> infixToPostfix(List<Obj> input) {
           break;
         }
       }
+      //add to when finished
       operatorStack.add(token);
     }, fun: (_) {
       operatorStack.add(token);

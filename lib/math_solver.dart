@@ -1,4 +1,5 @@
 library math_solver;
 
-export 'src/solver.dart';
-export 'src/format.dart';
+export 'src/solver.dart' show solve;
+export 'src/format.dart' show format;
+export 'src/error.dart';

@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'dart:math';
+import 'utils.dart';
 
 enum _Obj {
   Num,
@@ -26,6 +27,7 @@ enum Assoc {
 abstract class Obj extends Equatable {
   const Obj(this._type);
 
+  //Uses private enum to match and cast
   final _Obj _type;
 
   R when<R extends Object>({
@@ -53,7 +55,7 @@ abstract class Obj extends Equatable {
   }
 
   @override
-  List<Object> get props => [];
+  List<Object> get props => [_type];
 }
 
 class Num extends Obj {
@@ -135,17 +137,16 @@ class Fun extends Obj {
       var a = first.value;
       switch (function) {
         case Function.SquareRoot:
-          // print('sqrt($a)');
+          {
+            return sqrt(a);
+          }
           return sqrt(a);
         case Function.Sin:
-          // print('sin($a)');
-          return sin(a);
+          return sin(a * degrees2Radians);
         case Function.Cos:
-          // print('cos($a)');
-          return cos(a);
+          return cos(a * degrees2Radians);
         case Function.Tan:
-          // print('tan($a)');
-          return tan(a);
+          return tan(a * degrees2Radians);
       }
     }
     return 0;

@@ -1,6 +1,11 @@
-part of 'solver.dart';
+import 'package:math_solver/src/enum.dart';
+import 'dart:math' as math;
 
-Obj _functionFromString(String input) {
+const double radians2Degrees = 180.0 / math.pi;
+
+const double degrees2Radians = math.pi / 180.0;
+
+Obj functionFromString(String input) {
   switch (input) {
     case 'sqrt':
       return Fun(Function.SquareRoot);
@@ -15,7 +20,7 @@ Obj _functionFromString(String input) {
   }
 }
 
-Obj _operatorFromString(String char) {
+Obj operatorFromString(String char) {
   switch (char) {
     case '(':
       return ParL();

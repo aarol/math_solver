@@ -5,25 +5,6 @@ import 'package:math_solver/src/enum.dart';
 import 'package:test/test.dart';
 
 void main() {
-  group('object parse test', () {
-    test('sin2+1/17', () {
-      var input = 'sin2+1/17';
-      var res = [
-        Fun(Function.Sin),
-        Num(2.0),
-        Op(Operator.Add),
-        Num(1.0),
-        Op(Operator.Divide),
-        Num(17.0)
-      ];
-      expect(convertString(input), res);
-    });
-    test('2π', () {
-      var input = '2π';
-      var res = 2 * pi;
-      expect(solve(input), res);
-    });
-  });
   group('solver unit test', () {
     var testValues = {
       '6*6': 36,
@@ -31,6 +12,7 @@ void main() {
       '2*sqrt(9)': 6,
       '3+4*2/(1-5)^2^3': 3.0001220703125,
       '((10-4*2)^3)^2': 64,
+      '2sin(90)': 2,
     };
     for (var entry in testValues.entries) {
       test(entry.key, () {
@@ -51,10 +33,5 @@ void main() {
         expect(format(entry.key), entry.value);
       });
     }
-  });
-  group('format test test', () {
-    test('test', () {
-      format(6343);
-    });
   });
 }
