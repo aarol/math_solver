@@ -5,20 +5,19 @@ import 'error.dart';
 part 'utils.dart';
 
 double solve(String input) {
-  var debugString = '';
+  var debugString = StringBuffer();
   try {
     var objs = convertString(input);
-    debugString += 'converted to objs: $objs \n';
+    debugString.writeln('converted to objs: $objs');
     var clean = cleanInput(objs);
-    debugString += 'cleaned: $clean \n';
+    debugString.writeln('cleaned: $clean \n');
     var postfix = infixToPostfix(clean);
-    debugString += 'in postfix: $postfix \n';
+    debugString.writeln('in postfix: $postfix \n');
     var res = evaluate(postfix);
-    debugString += 'result: $res \n';
+    debugString.writeln('result: $res \n');
     return res;
   } catch (e) {
-    throw SolverException(e, '''
-      Debug information: \n
+    throw SolverException(e, '''Debug information: \n
       $debugString
       ''');
   }
