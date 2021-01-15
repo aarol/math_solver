@@ -22,3 +22,9 @@ class MissingParenthesisException implements Exception {
   @override
   String toString() => 'Missing parenthesis: $type';
 }
+
+class OverflowException implements Exception {
+  const OverflowException();
+  @override
+  String toString() => 'OverflowException: Result greater than 2^64-1';
+}

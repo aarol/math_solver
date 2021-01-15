@@ -5,21 +5,21 @@ import 'error.dart';
 import 'utils.dart';
 
 double solve(String input) {
-  var debugString = StringBuffer();
+  var buffer = StringBuffer();
   try {
     var objs = convertString(input);
-    debugString.writeln('converted to objs: $objs');
+    buffer.writeln('converted to objs: $objs');
     var clean = cleanInput(objs);
     if (clean != objs) {
-      debugString.writeln('cleaned: $clean');
+      buffer.writeln('cleaned: $clean');
     }
     var postfix = infixToPostfix(clean);
-    debugString.writeln('in postfix: $postfix');
+    buffer.writeln('in postfix: $postfix');
     var res = evaluate(postfix);
-    debugString.write('result: $res');
+    buffer.write('result: $res');
     return res;
   } catch (e) {
-    throw SolverException(e, 'Debug information: \n $debugString');
+    throw SolverException(e, 'Debug information: \n $buffer');
   }
 }
 
@@ -186,9 +186,12 @@ double evaluate(List<Obj> input) {
   }
   var res = resultStack.last;
   if (res is Num) {
+    if (res.value == double.infinity) {
+      throw OverflowException();
+    }
     return res.value;
   } else {
-    throw Exception('Evaluation failed');
+    throw Exception('Last item not a number');
   }
 }
 
@@ -196,11 +199,15 @@ bool _shouldPop(Op operator, Obj last) {
   if (last == ParL()) {
     return false;
   }
-  if (last is! Op) {
-    throw InvalidOperatorException([operator, last]);
+  if (last is Op) {
+    return operator.precedence < last.precedence ||
+        (operator.precedence == last.precedence &&
+            operator.assoc == Assoc.Left);
   }
-  var last_op = last as Op;
-  return operator.precedence < last_op.precedence ||
-      (operator.precedence == last_op.precedence &&
-          operator.assoc == Assoc.Left);
+  //functions always have precedence of 1
+  if (last is Fun) {
+    return operator.precedence < 1 ||
+        (operator.precedence == 1 && operator.assoc == Assoc.Left);
+  }
+  throw InvalidOperatorException([operator, last]);
 }
