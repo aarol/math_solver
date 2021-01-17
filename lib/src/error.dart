@@ -24,7 +24,8 @@ class MissingParenthesisException implements Exception {
 }
 
 class OverflowException implements Exception {
-  const OverflowException();
+  OverflowException(this.value);
+  double value;
   @override
-  String toString() => 'OverflowException: Result greater than 2^64-1';
+  String toString() => 'OverflowException: Result greater than 2^64 ($value)';
 }

@@ -30,7 +30,7 @@ double solve(String input, {Map<String, dynamic> valuesToRemap}) {
   try {
     var remapped = remapValues(input, valuesToRemap);
     buffer.writeln('remapped values: $remapped');
-    var objs = convertString(input);
+    var objs = convertString(remapped);
     buffer.writeln('converted to objs: $objs');
     var clean = cleanInput(objs);
     if (clean != objs) {
@@ -55,7 +55,7 @@ String remapValues(String input, Map<String, dynamic> values) {
       if (inputList[i] == ' ') {
         inputList[i] == '';
       } else {
-        var hashValue = hashMap.putIfAbsent(inputList[i], () => null);
+        var hashValue = hashMap[inputList[i]];
         if (hashValue != null) {
           inputList[i] = hashValue.toString();
         }
@@ -231,11 +231,11 @@ double evaluate(List<Obj> input) {
   var res = resultStack.last;
   if (res is Num) {
     if (res.value == double.infinity) {
-      throw OverflowException();
+      throw OverflowException(res.value);
     }
     return res.value;
   } else {
-    throw Exception('Last item not a number');
+    throw Exception('Result is not a number');
   }
 }
 

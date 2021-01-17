@@ -3,6 +3,7 @@
 ///
 
 String format(double input) {
+  if (input == null) return '';
   if (input.remainder(1) != 0.0) {
     //input is decimal
     //skip everything

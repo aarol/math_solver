@@ -133,23 +133,19 @@ class Fun extends Obj {
   const Fun(this.function) : super(_Obj.Fun);
   final Function function;
   double run(Obj first) {
-    if (first is Num) {
-      var a = first.value;
-      switch (function) {
-        case Function.SquareRoot:
-          {
-            return sqrt(a);
-          }
-          return sqrt(a);
-        case Function.Sin:
-          return sin(a * degrees2Radians);
-        case Function.Cos:
-          return cos(a * degrees2Radians);
-        case Function.Tan:
-          return tan(a * degrees2Radians);
-      }
+    var a = (first as Num).value;
+    switch (function) {
+      case Function.SquareRoot:
+        return sqrt(a);
+      case Function.Sin:
+        return sin(a * degrees2Radians);
+      case Function.Cos:
+        return cos(a * degrees2Radians);
+      case Function.Tan:
+        return tan(a * degrees2Radians);
+      default:
+        return 0;
     }
-    return 0;
   }
 
   @override
