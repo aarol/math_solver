@@ -1,10 +1,21 @@
-import 'dart:math';
-
 import 'package:math_solver/math_solver.dart';
-import 'package:math_solver/src/enum.dart';
+import 'package:math_solver/src/solver.dart';
 import 'package:test/test.dart';
 
 void main() {
+  group('remap values', () {
+    var testValues = {
+      '√9': [
+        {'√': 'sqrt'},
+        'sqrt9'
+      ],
+    };
+    for (final entry in testValues.entries) {
+      test(entry.key, () {
+        expect(remapValues(entry.key, entry.value[0]), entry.value[1]);
+      });
+    }
+  });
   group('solver unit test', () {
     var testValues = {
       '6*6': 36,

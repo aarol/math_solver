@@ -1,12 +1,12 @@
 import 'enum.dart';
 
 class SolverException {
-  final dynamic e;
+  final dynamic exception;
   final String debugInfo;
-  const SolverException(this.e, this.debugInfo);
+  const SolverException(this.exception, this.debugInfo);
 
   @override
-  String toString() => 'SolverException: $e \n $debugInfo';
+  String toString() => 'SolverException: $exception \n $debugInfo';
 }
 
 class InvalidOperatorException implements Exception {

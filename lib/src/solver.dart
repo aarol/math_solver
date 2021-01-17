@@ -1,12 +1,35 @@
+import 'dart:collection';
 import 'dart:math';
 
 import 'enum.dart';
 import 'error.dart';
 import 'utils.dart';
 
-double solve(String input) {
+/// Parses and solves an mathematical expression from a string
+///
+///Examples:
+///
+///     solve('-8*(-10)') // 80.0;
+///     solve('100/12.5') // 8.0;
+///     solve('(5*4-10)^2') // 100.0;
+///     solve('60sin(sqrt(1350*6))') // 60.0;
+///
+/// Throws `SolverException` when has any error. `SolverException` contains the
+/// original exception and a string with debug information. Useful for debugging.
+///
+///A map of <String, dynamic> is optional, it is used to replace certain characters.
+///
+///Examples:
+///
+///     solve('√36', {'√': 'sqrt'} ) // 'sqrt36'
+///     solve('2×5÷5)', {'×': '*', '÷': '/'}) // '2*5/5'
+///     solve('2×π)', {'×': '*', 'π': pi}) // '2*3.14159...'
+///
+double solve(String input, {Map<String, dynamic> valuesToRemap}) {
   var buffer = StringBuffer();
   try {
+    var remapped = remapValues(input, valuesToRemap);
+    buffer.writeln('remapped values: $remapped');
     var objs = convertString(input);
     buffer.writeln('converted to objs: $objs');
     var clean = cleanInput(objs);
@@ -20,6 +43,27 @@ double solve(String input) {
     return res;
   } catch (e) {
     throw SolverException(e, 'Debug information: \n $buffer');
+  }
+}
+
+String remapValues(String input, Map<String, dynamic> values) {
+  if (values != null) {
+    var inputList = input.split('');
+    var hashMap = HashMap<String, dynamic>.from(values);
+    for (var i = 0; i < input.length; i++) {
+      //remove spaces
+      if (inputList[i] == ' ') {
+        inputList[i] == '';
+      } else {
+        var hashValue = hashMap.putIfAbsent(inputList[i], () => null);
+        if (hashValue != null) {
+          inputList[i] = hashValue.toString();
+        }
+      }
+    }
+    return inputList.join('');
+  } else {
+    return input.replaceAll(' ', '');
   }
 }
 
@@ -60,10 +104,6 @@ List<Obj> convertString(String input) {
   }
 
   for (var char in input.split('')) {
-    if (char == ' ') {
-      clear();
-      continue;
-    }
     if (numReg.hasMatch(char) || alphaReg.hasMatch(char)) {
       addStack(char);
     } else if (char == 'π') {
@@ -89,18 +129,22 @@ List<Obj> cleanInput(List<Obj> input) {
         var val = Num(-(input[1] as Num).value);
         input[1] = val;
         input.removeAt(0);
+
         //+ 2 + 5 -> 2 + 5
       } else if (input[0] == Op(Operator.Add)) {
         input.remove(0);
       }
     } else {
       //2( -> 2*(
-      if (input[i - 1] is Num && input[i] is ParL) {
+      if (input[i - 1] is Num && input[i] == ParL()) {
         input.insert(i, Op(Operator.Multiply));
       }
       // 2π -> 2*π
       // should only happen with pi
       if (input[i - 1] is Num && input[i] == Num(pi)) {
+        input.insert(i, Op(Operator.Multiply));
+      }
+      if (input[i - 1] == Num(pi) && input[i] is Num) {
         input.insert(i, Op(Operator.Multiply));
       }
       // 2sqrt(9) -> 2*sqrt(9)

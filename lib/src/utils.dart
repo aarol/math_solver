@@ -6,7 +6,7 @@ const double radians2Degrees = 180.0 / math.pi;
 const double degrees2Radians = math.pi / 180.0;
 
 Obj functionFromString(String input) {
-  switch (input) {
+  switch (input.toLowerCase()) {
     case 'sqrt':
       return Fun(Function.SquareRoot);
     case 'sin':
