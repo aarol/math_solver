@@ -17,10 +17,10 @@ class InvalidOperatorException implements Exception {
 }
 
 class MissingParenthesisException implements Exception {
-  MissingParenthesisException(this.type);
-  final Obj type;
+  MissingParenthesisException({this.isLeft});
+  final bool isLeft;
   @override
-  String toString() => 'Missing parenthesis: $type';
+  String toString() => 'Missing parenthesis: ${isLeft ? 'left' : 'right'}';
 }
 
 class OverflowException implements Exception {

@@ -196,7 +196,7 @@ ListQueue<Obj> infixToPostfix(List<Obj> input) {
         }
       }
       if (!found) {
-        throw MissingParenthesisException(ParL());
+        throw MissingParenthesisException(isLeft: true);
       }
     }, undefined: () {
       throw Exception('Undefined object: $token');
@@ -205,7 +205,7 @@ ListQueue<Obj> infixToPostfix(List<Obj> input) {
   while (operatorStack.isNotEmpty) {
     var last = operatorStack.removeLast();
     if (last == ParL()) {
-      throw MissingParenthesisException(ParR());
+      throw MissingParenthesisException(isLeft: false);
     }
     output.add(last);
   }
