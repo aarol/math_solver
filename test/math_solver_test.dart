@@ -24,6 +24,7 @@ void main() {
       '3+4*2/(1-5)^2^3': 3.0001220703125,
       '((10-4*2)^3)^2': 64,
       '2sin(90)': 2,
+      '8(10-2': 64,
     };
     for (var entry in testValues.entries) {
       test(entry.key, () {

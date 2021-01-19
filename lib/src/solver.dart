@@ -203,11 +203,13 @@ ListQueue<Obj> infixToPostfix(List<Obj> input) {
     });
   }
   while (operatorStack.isNotEmpty) {
-    var last = operatorStack.removeLast();
-    if (last == ParL()) {
-      throw MissingParenthesisException(isLeft: false);
+    final last = operatorStack.removeLast();
+    // allows for easier usage by
+    // not forcing to complete parenthesis so
+    // '8(10-2' is an accepted input
+    if (last != ParL()) {
+      output.add(last);
     }
-    output.add(last);
   }
   return output;
 }
@@ -218,10 +220,17 @@ double evaluate(ListQueue<Obj> input) {
     token.when(num: (val) {
       resultStack.add(token);
     }, op: (op) {
+      if (resultStack.length < 2) {
+        throw Exception('Not enough parameters for operation ${op.operator}');
+      }
       var a = resultStack.removeLast();
       var b = resultStack.removeLast();
       resultStack.add(Num(op.operation(a, b)));
     }, fun: (function) {
+      if (resultStack.isEmpty) {
+        throw Exception(
+            'Not enough parameters for function ${function.function}');
+      }
       var a = resultStack.removeLast();
       resultStack.add(Num(function.run(a)));
     }, undefined: () {
