@@ -199,7 +199,7 @@ ListQueue<Obj> infixToPostfix(List<Obj> input) {
         throw MissingParenthesisException(isLeft: true);
       }
     }, undefined: () {
-      throw Exception('Undefined object: $token');
+      throw UndefinedObjectException(token);
     });
   }
   while (operatorStack.isNotEmpty) {
@@ -221,7 +221,7 @@ double evaluate(ListQueue<Obj> input) {
       resultStack.add(token);
     }, op: (op) {
       if (resultStack.length < 2) {
-        throw Exception('Not enough parameters for operation ${op.operator}');
+        throw Exception('Not enough arguments for operation ${op.operator}');
       }
       var a = resultStack.removeLast();
       var b = resultStack.removeLast();
@@ -229,12 +229,12 @@ double evaluate(ListQueue<Obj> input) {
     }, fun: (function) {
       if (resultStack.isEmpty) {
         throw Exception(
-            'Not enough parameters for function ${function.function}');
+            'Not enough arguments for function ${function.function}');
       }
       var a = resultStack.removeLast();
       resultStack.add(Num(function.run(a)));
     }, undefined: () {
-      throw Exception('No action found for $token');
+      throw UndefinedObjectException(token);
     });
   }
   var res = resultStack.last;
@@ -262,5 +262,5 @@ bool _shouldPop(Op operator, Obj last) {
     return operator.precedence < 1 ||
         (operator.precedence == 1 && operator.assoc == Assoc.Left);
   }
-  throw InvalidOperatorException([operator, last]);
+  throw Exception('Cannot compare ${[operator, last]}');
 }

@@ -9,11 +9,11 @@ class SolverException {
   String toString() => 'SolverException: $exception \n $debugInfo';
 }
 
-class InvalidOperatorException implements Exception {
-  const InvalidOperatorException(this.objs);
-  final List<Obj> objs;
+class UndefinedObjectException implements Exception {
+  const UndefinedObjectException(this.obj);
+  final Undefined obj;
   @override
-  String toString() => 'Invalid operator: $objs';
+  String toString() => 'Invalid operator: ${obj.from}';
 }
 
 class MissingParenthesisException implements Exception {
