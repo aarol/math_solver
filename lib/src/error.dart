@@ -27,5 +27,6 @@ class OverflowException implements Exception {
   OverflowException(this.value);
   double value;
   @override
-  String toString() => 'OverflowException: Result greater than 2^64 ($value)';
+  String toString() =>
+      'OverflowException: Result greater than 2^64 (double.infinity)';
 }

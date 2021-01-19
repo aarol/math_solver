@@ -68,8 +68,8 @@ String remapValues(String input, Map<String, dynamic> values) {
 }
 
 List<Obj> convertString(String input) {
-  var res = <Obj>[];
-  var stack = <String>[];
+  var res = ListQueue<Obj>(input.length ~/ 0.8);
+  var stack = ListQueue<String>();
 
   final numReg = RegExp('[0-9.]');
   final alphaReg = RegExp('[a-z]');
@@ -91,7 +91,7 @@ List<Obj> convertString(String input) {
 
   void addStack(String char) {
     if (stack.isNotEmpty) {
-      final isNumeric = numReg.hasMatch(stack[0]);
+      final isNumeric = numReg.hasMatch(stack.first);
       if (numReg.hasMatch(char)) {
         if (!isNumeric) {
           clear();
@@ -117,7 +117,7 @@ List<Obj> convertString(String input) {
     }
   }
   clear();
-  return res;
+  return res.toList();
 }
 
 List<Obj> cleanInput(List<Obj> input) {
@@ -162,9 +162,9 @@ List<Obj> cleanInput(List<Obj> input) {
 ///
 ///turns infix ( 3*(2+1) ) to postfix ( 321+* )
 ///
-List<Obj> infixToPostfix(List<Obj> input) {
-  var output = <Obj>[];
-  var operatorStack = <Obj>[];
+ListQueue<Obj> infixToPostfix(List<Obj> input) {
+  var output = ListQueue<Obj>(input.length);
+  var operatorStack = ListQueue<Obj>();
 
   for (final token in input) {
     token.when(num: (_) {
@@ -212,8 +212,8 @@ List<Obj> infixToPostfix(List<Obj> input) {
   return output;
 }
 
-double evaluate(List<Obj> input) {
-  var resultStack = <Obj>[];
+double evaluate(ListQueue<Obj> input) {
+  var resultStack = ListQueue<Obj>(input.length);
   for (final token in input) {
     token.when(num: (val) {
       resultStack.add(token);
