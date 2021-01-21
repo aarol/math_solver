@@ -1,6 +1,6 @@
 import 'dart:collection';
+import 'dart:convert';
 
-import 'package:intl/intl.dart';
 import 'package:math_solver/math_solver.dart';
 import 'package:math_solver/src/bigint.dart';
 import 'package:math_solver/src/format.dart';
@@ -55,6 +55,21 @@ void main() {
   group('bigInt tests', () {
     var x = BigInt.parse('10000000000');
     var s = formatNotation(x);
+
+    var js = '{value: 1.0}';
+
+    Obj.fromJson(jsonDecode(js), t);
+
+    var ls = [
+      Num(1),
+      Num(15),
+      Op(Operator.Add),
+    ];
+
+    ls.forEach((element) {
+      print(element.toJson());
+    });
+
     test('t1', () {
       var input = [
         Num(2.0),

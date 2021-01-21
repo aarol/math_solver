@@ -4,6 +4,8 @@ import 'utils.dart';
 
 import 'package:json_annotation/json_annotation.dart';
 
+part 'enum.g.dart';
+
 enum _Obj {
   Num,
   BigNum,
@@ -27,14 +29,13 @@ enum Assoc {
   Right,
 }
 
-@JsonSerializable()
 abstract class Obj extends Equatable {
   const Obj(this._type);
 
   //Uses private enum to match and cast
   final _Obj _type;
 
-  R when<R extends Object>({
+  R when<R extends Obj>({
     R Function(Num) num,
     R Function(BigNum) bigNum,
     R Function(Op) op,
@@ -63,8 +64,13 @@ abstract class Obj extends Equatable {
 
   @override
   List<Object> get props => [_type];
+
+  Map<String, dynamic> toJson();
+
+  Obj.fromJson(Map<String, dynamic> json, this._type);
 }
 
+@JsonSerializable()
 class Num extends Obj {
   const Num(this.value) : super(_Obj.Num);
   final double value;
@@ -72,8 +78,15 @@ class Num extends Obj {
   bool get stringify => true;
   @override
   List<Object> get props => [value];
+
+  @override
+  Map<String, dynamic> toJson() => _$NumToJson(this);
+
+  @override
+  factory Num.fromJson(json) => _$NumFromJson(json);
 }
 
+@JsonSerializable()
 class BigNum extends Obj {
   const BigNum(this.value) : super(_Obj.BigNum);
   final BigInt value;
@@ -81,8 +94,15 @@ class BigNum extends Obj {
   bool get stringify => true;
   @override
   List<Object> get props => [value];
+
+  @override
+  Obj fromJson(Map<String, dynamic> json) => _$BigNumFromJson(json);
+
+  @override
+  Map<String, dynamic> toJson() => _$BigNumToJson(this);
 }
 
+@JsonSerializable()
 class Op extends Obj {
   const Op(this.operator) : super(_Obj.Op);
   final Operator operator;
@@ -123,11 +143,18 @@ class Op extends Obj {
   }
 
   @override
+  Obj fromJson(Map<String, dynamic> json) => _$OpFromJson(json);
+
+  @override
+  Map<String, dynamic> toJson() => _$OpToJson(this);
+
+  @override
   String toString() => 'Op($operator)';
   @override
   List<Object> get props => [operator];
 }
 
+@JsonSerializable()
 class Fun extends Obj {
   const Fun(this.function) : super(_Obj.Fun);
   final Function function;
@@ -165,26 +192,53 @@ class Fun extends Obj {
   }
 
   @override
+  Obj fromJson(Map<String, dynamic> json) => _$FunFromJson(json);
+
+  @override
+  Map<String, dynamic> toJson() => _$FunToJson(this);
+
+  @override
   String toString() => 'Fun($function)';
   @override
   List<Object> get props => [function];
 }
 
+@JsonSerializable()
 class ParL extends Obj {
   const ParL() : super(_Obj.ParL);
   @override
   String toString() => 'Par(';
+
+  @override
+  Obj fromJson(Map<String, dynamic> json) => _$ParLFromJson(json);
+
+  @override
+  Map<String, dynamic> toJson() => _$ParLToJson(this);
 }
 
+@JsonSerializable()
 class ParR extends Obj {
   const ParR() : super(_Obj.ParR);
   @override
   String toString() => 'Par)';
+
+  @override
+  Obj fromJson(Map<String, dynamic> json) => _$ParRFromJson(json);
+
+  @override
+  Map<String, dynamic> toJson() => _$ParRToJson(this);
 }
 
+@JsonSerializable()
 class Undefined extends Obj {
   const Undefined(this.from) : super(_Obj.Undefined);
   final String from;
   @override
   String toString() => 'Undefined($from)';
+
+  @override
+  Obj fromJson(Map<String, dynamic> json) => _$UndefinedFromJson(json);
+
+  @override
+  Map<String, dynamic> toJson() => _$UndefinedToJson(this);
 }
