@@ -4,6 +4,7 @@ import 'utils.dart';
 
 enum _Obj {
   Num,
+  BigNum,
   Op,
   Fun,
   ParL,
@@ -32,6 +33,7 @@ abstract class Obj extends Equatable {
 
   R when<R extends Object>({
     R Function(Num) num,
+    R Function(BigNum) bigNum,
     R Function(Op) op,
     R Function(Fun) fun,
     R Function() parL,
@@ -41,6 +43,8 @@ abstract class Obj extends Equatable {
     switch (_type) {
       case _Obj.Num:
         return num(this as Num);
+      case _Obj.BigNum:
+        return bigNum(this as BigNum);
       case _Obj.Op:
         return op(this as Op);
       case _Obj.Fun:
@@ -62,7 +66,16 @@ class Num extends Obj {
   const Num(this.value) : super(_Obj.Num);
   final double value;
   @override
-  String toString() => 'Num($value)';
+  bool get stringify => true;
+  @override
+  List<Object> get props => [value];
+}
+
+class BigNum extends Obj {
+  const BigNum(this.value) : super(_Obj.BigNum);
+  final BigInt value;
+  @override
+  bool get stringify => true;
   @override
   List<Object> get props => [value];
 }
