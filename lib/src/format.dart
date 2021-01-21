@@ -23,3 +23,20 @@ String format(double input) {
   }
   return list.reversed.join();
 }
+
+String formatNotation(BigInt input) {
+  //smaller than 10 000 000 000 or 10 ^ 10
+  //don't format
+  if (input < BigInt.from(10000000000)) {
+    return input.toString();
+  } else {
+    var bfr = StringBuffer();
+    var str = input.toString();
+    var pre = str[0] == '-' ? '-' : '+';
+    var first = str.substring(0, 3).split('');
+    bfr.write((first..insert(1, '.')).join());
+    var rest = str.length - 1;
+    bfr.write('e$pre$rest');
+    return bfr.toString();
+  }
+}

@@ -1,5 +1,11 @@
+import 'dart:collection';
+
+import 'package:intl/intl.dart';
 import 'package:math_solver/math_solver.dart';
+import 'package:math_solver/src/bigint.dart';
+import 'package:math_solver/src/format.dart';
 import 'package:math_solver/src/solver.dart';
+import 'package:math_solver/src/enum.dart';
 import 'package:test/test.dart';
 
 void main() {
@@ -27,8 +33,8 @@ void main() {
       '8(10-2': 64,
     };
     for (var entry in testValues.entries) {
-      test(entry.key, () {
-        expect(solve(entry.key), entry.value);
+      test(entry.key, () async {
+        expect(await solve(entry.key), entry.value);
       });
     }
   });
@@ -45,5 +51,20 @@ void main() {
         expect(format(entry.key), entry.value);
       });
     }
+  });
+  group('bigInt tests', () {
+    var x = BigInt.parse('10000000000');
+    var s = formatNotation(x);
+    test('t1', () {
+      var input = [
+        Num(2.0),
+        Num(10000.0),
+        Num(100.0),
+        Op(Operator.Exponent),
+        Op(Operator.Multiply),
+      ];
+      var res = solvewithBigInt(ListQueue.from(input));
+      expect(res, BigInt.one, skip: true);
+    });
   });
 }

@@ -1,9 +1,13 @@
 import 'dart:collection';
 import 'dart:math';
+import 'dart:async';
+
+import 'package:math_solver/src/bigint.dart';
 
 import 'enum.dart';
 import 'error.dart';
 import 'utils.dart';
+import 'format.dart';
 
 /// Parses and solves an mathematical expression from a string
 ///
@@ -25,7 +29,7 @@ import 'utils.dart';
 ///     solve('2×5÷5)', {'×': '*', '÷': '/'}) // '2*5/5'
 ///     solve('2×π)', {'×': '*', 'π': pi}) // '2*3.14159...'
 ///
-double solve(String input, {Map<String, dynamic> valuesToRemap}) {
+Future<String> solve(String input, {Map<String, dynamic> valuesToRemap}) async {
   var buffer = StringBuffer();
   try {
     var remapped = remapValues(input, valuesToRemap);
@@ -38,7 +42,9 @@ double solve(String input, {Map<String, dynamic> valuesToRemap}) {
     }
     var postfix = infixToPostfix(clean);
     buffer.writeln('in postfix: $postfix');
-    var res = evaluate(postfix);
+    var eval = await evaluate(postfix);
+    buffer.writeln('evaluated: $eval');
+    var res = simplify(eval);
     buffer.write('result: $res');
     return res;
   } catch (e) {
@@ -172,7 +178,7 @@ ListQueue<Obj> infixToPostfix(List<Obj> input) {
     }, op: (val) {
       while (operatorStack.isNotEmpty) {
         final last = operatorStack.last;
-        if (_shouldPop(val, last)) {
+        if (shouldPop(val, last)) {
           output.add(operatorStack.removeLast());
         } else {
           break;
@@ -214,7 +220,7 @@ ListQueue<Obj> infixToPostfix(List<Obj> input) {
   return output;
 }
 
-double evaluate(ListQueue<Obj> input) {
+dynamic evaluate(ListQueue<Obj> input) async {
   var resultStack = ListQueue<Obj>(input.length);
   for (final token in input) {
     token.when(num: (val) {
@@ -240,7 +246,15 @@ double evaluate(ListQueue<Obj> input) {
   var res = resultStack.last;
   if (res is Num) {
     if (res.value == double.infinity) {
-      throw OverflowException(res.value);
+      //If value is higher than double maximum,
+      //Recalculates with bigInt
+
+      return await solvewithBigInt(input).timeout(
+        Duration(seconds: 3),
+        onTimeout: () {
+          throw TimeoutException();
+        },
+      );
     }
     return res.value;
   } else {
@@ -248,19 +262,13 @@ double evaluate(ListQueue<Obj> input) {
   }
 }
 
-bool _shouldPop(Op operator, Obj last) {
-  if (last == ParL()) {
-    return false;
+String simplify(dynamic input) {
+  if (input is double) return input.toString();
+  if (input is BigInt) {
+    if (input > BigInt.from(10000000000)) {
+      return formatNotation(input);
+    }
+    return '0';
   }
-  if (last is Op) {
-    return operator.precedence < last.precedence ||
-        (operator.precedence == last.precedence &&
-            operator.assoc == Assoc.Left);
-  }
-  //functions always have precedence of 1
-  if (last is Fun) {
-    return operator.precedence < 1 ||
-        (operator.precedence == 1 && operator.assoc == Assoc.Left);
-  }
-  throw Exception('Cannot compare ${[operator, last]}');
+  throw Exception('Input was not double or BigInt');
 }

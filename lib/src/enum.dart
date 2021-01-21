@@ -2,6 +2,8 @@ import 'package:equatable/equatable.dart';
 import 'dart:math';
 import 'utils.dart';
 
+import 'package:json_annotation/json_annotation.dart';
+
 enum _Obj {
   Num,
   BigNum,
@@ -25,6 +27,7 @@ enum Assoc {
   Right,
 }
 
+@JsonSerializable()
 abstract class Obj extends Equatable {
   const Obj(this._type);
 
@@ -109,29 +112,12 @@ class Op extends Obj {
     }
   }
 
-  double operation(Obj first, Obj second) {
+  dynamic operation(Obj first, Obj second) {
     if (first is Num && second is Num) {
-      var a = first.value;
-      var b = second.value;
-      switch (operator) {
-        case Operator.Add:
-          // print('$b + $a');
-          return b + a;
-        case Operator.Substract:
-          // print('$b - $a');
-          return b - a;
-        case Operator.Multiply:
-          // print('$b * $a');
-          return b * a;
-        case Operator.Divide:
-          // print('$b / $a');
-          return b / a;
-        case Operator.Exponent:
-          // print('$b ^ $a');
-          return pow(b, a);
-        default:
-          return 0;
-      }
+      return doubleOperation(operator, first.value, second.value);
+    }
+    if (first is BigNum && second is BigNum) {
+      return bigIntOperation(operator, first.value, second.value);
     }
     throw Exception('$first or $second is not a valid number');
   }
@@ -145,19 +131,36 @@ class Op extends Obj {
 class Fun extends Obj {
   const Fun(this.function) : super(_Obj.Fun);
   final Function function;
-  double run(Obj first) {
-    var a = (first as Num).value;
-    switch (function) {
-      case Function.SquareRoot:
-        return sqrt(a);
-      case Function.Sin:
-        return sin(a * degrees2Radians);
-      case Function.Cos:
-        return cos(a * degrees2Radians);
-      case Function.Tan:
-        return tan(a * degrees2Radians);
-      default:
-        return 0;
+  dynamic run(Obj first) {
+    if (first is Num) {
+      var a = first.value;
+      switch (function) {
+        case Function.SquareRoot:
+          return sqrt(a);
+        case Function.Sin:
+          return sin(a * degrees2Radians);
+        case Function.Cos:
+          return cos(a * degrees2Radians);
+        case Function.Tan:
+          return tan(a * degrees2Radians);
+        default:
+          return 0;
+      }
+    }
+    if (first is BigNum) {
+      var a = first.value.toDouble();
+      switch (function) {
+        case Function.SquareRoot:
+          return BigInt.from(sqrt(a));
+        case Function.Sin:
+          return BigInt.from(sin(a * degrees2Radians));
+        case Function.Cos:
+          return BigInt.from(cos(a * degrees2Radians));
+        case Function.Tan:
+          return BigInt.from(tan(a * degrees2Radians));
+        default:
+          return 0;
+      }
     }
   }
 

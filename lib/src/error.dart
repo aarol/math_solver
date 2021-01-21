@@ -17,16 +17,14 @@ class UndefinedObjectException implements Exception {
 }
 
 class MissingParenthesisException implements Exception {
-  MissingParenthesisException({this.isLeft});
+  const MissingParenthesisException({this.isLeft});
   final bool isLeft;
   @override
   String toString() => 'Missing parenthesis: ${isLeft ? 'left' : 'right'}';
 }
 
-class OverflowException implements Exception {
-  OverflowException(this.value);
-  double value;
+class TimeoutException implements Exception {
+  const TimeoutException();
   @override
-  String toString() =>
-      'OverflowException: Result greater than 2^64 (double.infinity)';
+  String toString() => 'Calculation took too long to complete';
 }

@@ -9,7 +9,7 @@ environment:
 
 dependencies:
   equatable: ^1.2.5
-  meta: ^1.2.4
+  json_serializable: ^3.5.1
 
 dev_dependencies:
   pedantic: ^1.9.2
