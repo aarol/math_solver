@@ -33,12 +33,7 @@ dynamic evaluate(ListQueue<Obj> input) async {
       //If value is higher than double maximum,
       //Recalculates with bigInt
 
-      return await runIsolate(input).timeout(
-        Duration(seconds: 3),
-        onTimeout: () {
-          throw TimeoutException();
-        },
-      );
+      return await runIsolate(input);
     }
     return res.value;
   } else {

@@ -1,9 +1,10 @@
-import 'dart:async';
+import 'dart:async' hide TimeoutException;
 import 'dart:collection';
 import 'dart:isolate';
 
 import 'enum.dart';
 import 'eval.dart';
+import 'error.dart';
 
 Future<BigInt> runIsolate(ListQueue<Obj> input) async {
   var completer = Completer<BigInt>();
@@ -16,6 +17,13 @@ Future<BigInt> runIsolate(ListQueue<Obj> input) async {
       isolate.kill(priority: Isolate.immediate);
       receivePort.close();
       completer.complete(data);
+    }
+  });
+  Future.delayed(Duration(seconds: 3), () {
+    if (!completer.isCompleted) {
+      isolate.kill(priority: Isolate.immediate);
+      receivePort.close();
+      throw TimeoutException();
     }
   });
   return completer.future;

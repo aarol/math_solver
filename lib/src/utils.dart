@@ -1,6 +1,8 @@
 import 'package:math_solver/src/enum.dart';
 import 'dart:math' as math;
 
+import 'format.dart';
+
 const double radians2Degrees = 180.0 / math.pi;
 
 const double degrees2Radians = math.pi / 180.0;
@@ -20,6 +22,17 @@ bool shouldPop(Op operator, Obj last) {
         (operator.precedence == 1 && operator.assoc == Assoc.Left);
   }
   throw Exception('Cannot compare ${[operator, last]}');
+}
+
+String simplify(dynamic input) {
+  if (input is double) return input.toString();
+  if (input is BigInt) {
+    if (input > BigInt.from(10000000000)) {
+      return formatNotation(input);
+    }
+    return input.toString();
+  }
+  throw Exception('Input was not double or BigInt');
 }
 
 Obj functionFromString(String input) {

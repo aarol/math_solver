@@ -2,15 +2,17 @@
 ///
 ///
 
-String format(double input) {
+String format(String input) {
   if (input == null) return '';
-  if (input.remainder(1) != 0.0) {
-    //input is decimal
+  var value = double.tryParse(input);
+  if (value == null) return '';
+  if (value.remainder(1) != 0.0) {
+    //value is decimal
     //skip everything
-    return input.toString();
+    return value.toString();
   }
   // 1234567 ->  <String>[7,6,5,4,3,2,1]
-  var list = input.toInt().toString().split('').reversed.toList();
+  var list = value.toInt().toString().split('').reversed.toList();
   final length = list.length;
   // count is added so the index moves as the list grows
   var count = 0;

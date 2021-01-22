@@ -6,7 +6,6 @@ import 'enum.dart';
 import 'error.dart';
 import 'eval.dart';
 import 'utils.dart';
-import 'format.dart';
 
 /// Parses and solves an mathematical expression from a string
 ///
@@ -227,15 +226,4 @@ ListQueue<Obj> infixToPostfix(List<Obj> input) {
     }
   }
   return output;
-}
-
-String simplify(dynamic input) {
-  if (input is double) return input.toString();
-  if (input is BigInt) {
-    if (input > BigInt.from(10000000000)) {
-      return formatNotation(input);
-    }
-    return '0';
-  }
-  throw Exception('Input was not double or BigInt');
 }
