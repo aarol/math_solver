@@ -2,11 +2,7 @@ import 'package:equatable/equatable.dart';
 import 'dart:math';
 import 'utils.dart';
 
-import 'package:json_annotation/json_annotation.dart';
-
-part 'enum.g.dart';
-
-enum ObjEnum {
+enum _Obj {
   Num,
   BigNum,
   Op,
@@ -30,54 +26,63 @@ enum Assoc {
 }
 
 abstract class Obj extends Equatable {
-  const Obj(this.type);
+  const Obj(this._type);
 
-  //Uses enum to match and cast in utils.dart extension
-  final ObjEnum type;
+  //Uses private enum to match and cas
+  final _Obj _type;
+
+  R when<R extends Obj>({
+    R Function(Num) num,
+    R Function(BigNum) bigNum,
+    R Function(Op) op,
+    R Function(Fun) fun,
+    R Function() parL,
+    R Function() parR,
+    R Function() undefined,
+  }) {
+    switch (_type) {
+      case _Obj.Num:
+        return num(this as Num);
+      case _Obj.BigNum:
+        return bigNum(this as BigNum);
+      case _Obj.Op:
+        return op(this as Op);
+      case _Obj.Fun:
+        return fun(this as Fun);
+      case _Obj.ParL:
+        return parL();
+      case _Obj.ParR:
+        return parR();
+      default:
+        return undefined();
+    }
+  }
 
   @override
-  List<Object> get props => [type];
-
-  Map<String, dynamic> toJson();
+  List<Object> get props => [_type];
 }
 
-@JsonSerializable()
 class Num extends Obj {
-  const Num(this.value) : super(ObjEnum.Num);
+  const Num(this.value) : super(_Obj.Num);
   final double value;
   @override
   bool get stringify => true;
   @override
   List<Object> get props => [value];
-
-  @override
-  Map<String, dynamic> toJson() =>
-      _$NumToJson(this)..addEntries([MapEntry('type', ObjEnum.Num)]);
-
-  @override
-  factory Num.fromJson(json) => _$NumFromJson(json);
 }
 
-@JsonSerializable()
 class BigNum extends Obj {
-  const BigNum(this.value) : super(ObjEnum.BigNum);
+  const BigNum(this.value) : super(_Obj.BigNum);
 
   final BigInt value;
   @override
   bool get stringify => true;
   @override
   List<Object> get props => [value];
-
-  static Obj fromJson(Map<String, dynamic> json) => _$BigNumFromJson(json);
-
-  @override
-  Map<String, dynamic> toJson() =>
-      _$BigNumToJson(this)..addEntries([MapEntry('type', ObjEnum.BigNum)]);
 }
 
-@JsonSerializable()
 class Op extends Obj {
-  const Op(this.operator) : super(ObjEnum.Op);
+  const Op(this.operator) : super(_Obj.Op);
   final Operator operator;
   int get precedence {
     switch (operator) {
@@ -115,21 +120,14 @@ class Op extends Obj {
     throw Exception('$first or $second is not a valid number');
   }
 
-  static Obj fromJson(Map<String, dynamic> json) => _$OpFromJson(json);
-
-  @override
-  Map<String, dynamic> toJson() =>
-      _$OpToJson(this)..addEntries([MapEntry('type', ObjEnum.Op)]);
-
   @override
   bool get stringify => true;
   @override
   List<Object> get props => [operator];
 }
 
-@JsonSerializable()
 class Fun extends Obj {
-  const Fun(this.function) : super(ObjEnum.Fun);
+  const Fun(this.function) : super(_Obj.Fun);
   final Function function;
   dynamic run(Obj first) {
     if (first is Num) {
@@ -164,55 +162,28 @@ class Fun extends Obj {
     }
   }
 
-  static Obj fromJson(Map<String, dynamic> json) => _$FunFromJson(json);
-
-  @override
-  Map<String, dynamic> toJson() =>
-      _$FunToJson(this)..addEntries([MapEntry('type', ObjEnum.Fun)]);
-
   @override
   bool get stringify => true;
   @override
   List<Object> get props => [function];
 }
 
-@JsonSerializable()
 class ParL extends Obj {
-  const ParL() : super(ObjEnum.ParL);
+  const ParL() : super(_Obj.ParL);
 
   @override
   String toString() => 'Par(';
-
-  static Obj fromJson(Map<String, dynamic> json) => _$ParLFromJson(json);
-
-  @override
-  Map<String, dynamic> toJson() =>
-      _$ParLToJson(this)..addEntries([MapEntry('type', ObjEnum.ParL)]);
 }
 
-@JsonSerializable()
 class ParR extends Obj {
-  const ParR() : super(ObjEnum.ParR);
+  const ParR() : super(_Obj.ParR);
   @override
   String toString() => 'Par)';
-
-  static Obj fromJson(Map<String, dynamic> json) => _$ParRFromJson(json);
-
-  @override
-  Map<String, dynamic> toJson() =>
-      _$ParRToJson(this)..addEntries([MapEntry('type', ObjEnum.ParR)]);
 }
 
-@JsonSerializable()
 class Undefined extends Obj {
-  const Undefined(this.from) : super(ObjEnum.Undefined);
+  const Undefined(this.from) : super(_Obj.Undefined);
   final String from;
   @override
   String toString() => 'Undefined($from)';
-
-  static Obj fromJson(Map<String, dynamic> json) => _$UndefinedFromJson(json);
-
-  @override
-  Map<String, dynamic> toJson() => _$UndefinedToJson(this)
-    ..addEntries([MapEntry('type', ObjEnum.Undefined)]);
 }

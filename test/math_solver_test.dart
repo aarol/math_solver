@@ -1,11 +1,9 @@
 import 'dart:collection';
-import 'dart:convert';
 
 import 'package:math_solver/math_solver.dart';
 import 'package:math_solver/src/bigint.dart';
 import 'package:math_solver/src/format.dart';
 import 'package:math_solver/src/isolate.dart';
-import 'package:math_solver/src/json.dart';
 import 'package:math_solver/src/solver.dart';
 import 'package:math_solver/src/enum.dart';
 import 'package:test/test.dart';
@@ -60,11 +58,6 @@ void main() {
       Num(15),
       Op(Operator.Add),
     ];
-
-    ls.forEach((element) {
-      print(deserialize(element.toJson()));
-    });
-
     test('t1', () async {
       print(await runIsolate(ls));
       var input = [
