@@ -2,6 +2,7 @@ import 'package:math_solver/src/enum.dart';
 import 'dart:math' as math;
 
 import 'format.dart';
+import 'error.dart';
 
 const double radians2Degrees = 180.0 / math.pi;
 
@@ -74,19 +75,15 @@ Obj operatorFromString(String char) {
 double doubleOperation(Operator op, double a, double b) {
   switch (op) {
     case Operator.Add:
-      // print('$b + $a');
       return b + a;
     case Operator.Substract:
-      // print('$b - $a');
       return b - a;
     case Operator.Multiply:
-      // print('$b * $a');
       return b * a;
     case Operator.Divide:
-      // print('$b / $a');
+      if (a == 0) throw DivideByZeroException();
       return b / a;
     case Operator.Exponent:
-      // print('$b ^ $a');
       return math.pow(b, a);
     default:
       return 0;
@@ -96,19 +93,15 @@ double doubleOperation(Operator op, double a, double b) {
 BigInt bigIntOperation(Operator op, BigInt a, BigInt b) {
   switch (op) {
     case Operator.Add:
-      // print('$b + $a');
       return a + b;
     case Operator.Substract:
-      // print('$b - $a');
       return b - a;
     case Operator.Multiply:
-      // print('$b * $a');
       return b * a;
     case Operator.Divide:
-      // print('$b / $a');
+      if (a == BigInt.zero) throw DivideByZeroException();
       return BigInt.from(b / a);
     case Operator.Exponent:
-      // print('$b ^ $a');
       return b.pow(a.toInt());
     default:
       return BigInt.zero;

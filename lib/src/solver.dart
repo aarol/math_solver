@@ -32,7 +32,9 @@ Future<String> solve(String input, {Map<String, dynamic> valuesToRemap}) async {
   try {
     // √ 9 -> sqrt 9
     var remapped = remapValues(input, valuesToRemap);
-    buffer.writeln('remapped values: $remapped');
+    if (remapped != input) {
+      buffer.writeln('remapped values: $remapped');
+    }
 
     // String input to List of <Obj>
     var objs = convertString(remapped);
@@ -130,6 +132,7 @@ List<Obj> convertString(String input) {
       res.add(obj);
     }
   }
+
   clear();
   return res.toList();
 }
