@@ -101,3 +101,32 @@ BigInt bigIntOperation(Operator op, BigInt a, BigInt b) {
       return BigInt.zero;
   }
 }
+
+extension When on Obj {
+  R when<R extends Obj>({
+    R Function(Num) num,
+    R Function(BigNum) bigNum,
+    R Function(Op) op,
+    R Function(Fun) fun,
+    R Function() parL,
+    R Function() parR,
+    R Function() undefined,
+  }) {
+    switch (type) {
+      case ObjEnum.Num:
+        return num(this as Num);
+      case ObjEnum.BigNum:
+        return bigNum(this as BigNum);
+      case ObjEnum.Op:
+        return op(this as Op);
+      case ObjEnum.Fun:
+        return fun(this as Fun);
+      case ObjEnum.ParL:
+        return parL();
+      case ObjEnum.ParR:
+        return parR();
+      default:
+        return undefined();
+    }
+  }
+}
