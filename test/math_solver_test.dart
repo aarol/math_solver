@@ -24,17 +24,17 @@ void main() {
   });
   group('solver unit test', () {
     var testValues = {
-      '6*6': 36,
-      '-6+(3*4)': 6,
-      '2*sqrt(9)': 6,
+      '6*6': 36.0,
+      '-6+(3*4)': 6.0,
+      '2*sqrt(9)': 6.0,
       '3+4*2/(1-5)^2^3': 3.0001220703125,
-      '((10-4*2)^3)^2': 64,
-      '2sin(90)': 2,
-      '8(10-2': 64,
+      '((10-4*2)^3)^2': 64.0,
+      '2sin(90)': 2.0,
+      '8(10-2': 64.0,
     };
     for (var entry in testValues.entries) {
       test(entry.key, () async {
-        expect(await solve(entry.key), entry.value);
+        expect(await solve(entry.key), entry.value.toString());
       });
     }
   });
@@ -53,22 +53,9 @@ void main() {
     }
   });
   group('bigInt tests', () {
-    var ls = [
-      Num(1),
-      Num(15),
-      Op(Operator.Add),
-    ];
-    test('t1', () async {
-      print(await runIsolate(ls));
-      var input = [
-        Num(2.0),
-        Num(10000.0),
-        Num(100.0),
-        Op(Operator.Exponent),
-        Op(Operator.Multiply),
-      ];
-      var res = solvewithBigInt(ListQueue.from(input));
-      expect(res, BigInt.one, skip: true);
+    test('solve bigInt', () async {
+      var res = await solve('1000^1000');
+      expect(res, '1.00e+3000');
     });
   });
 }

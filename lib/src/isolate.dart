@@ -6,17 +6,18 @@ import 'package:math_solver/src/bigint.dart';
 
 import 'enum.dart';
 
-Future<BigInt> runIsolate(List<Obj> input) async {
+Future<BigInt> runIsolate(ListQueue<Obj> input) async {
   var completer = Completer<BigInt>();
   var receivePort = ReceivePort();
+  var isolate = await Isolate.spawn(runSolve, receivePort.sendPort);
   receivePort.listen((data) {
     if (data is SendPort) {
-      data.send(ListQueue<Obj>.from(input));
+      data.send(input);
     } else {
+      isolate.kill();
       completer.complete(data);
     }
   });
-  await Isolate.spawn(runSolve, receivePort.sendPort);
   return completer.future;
 }
 

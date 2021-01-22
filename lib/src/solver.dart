@@ -6,6 +6,7 @@ import 'package:math_solver/src/bigint.dart';
 
 import 'enum.dart';
 import 'error.dart';
+import 'isolate.dart';
 import 'utils.dart';
 import 'format.dart';
 
@@ -249,7 +250,7 @@ dynamic evaluate(ListQueue<Obj> input) async {
       //If value is higher than double maximum,
       //Recalculates with bigInt
 
-      return await solvewithBigInt(input).timeout(
+      return await runIsolate(input).timeout(
         Duration(seconds: 3),
         onTimeout: () {
           throw TimeoutException();
