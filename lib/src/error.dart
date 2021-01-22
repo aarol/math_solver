@@ -28,3 +28,9 @@ class TimeoutException implements Exception {
   @override
   String toString() => 'Calculation took too long to complete';
 }
+
+class DivideByZeroException implements Exception {
+  const DivideByZeroException();
+  @override
+  String toString() => 'Cannot divide by zero';
+}

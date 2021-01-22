@@ -1,11 +1,6 @@
-import 'dart:collection';
-
 import 'package:math_solver/math_solver.dart';
-import 'package:math_solver/src/bigint.dart';
 import 'package:math_solver/src/format.dart';
-import 'package:math_solver/src/isolate.dart';
 import 'package:math_solver/src/solver.dart';
-import 'package:math_solver/src/enum.dart';
 import 'package:test/test.dart';
 
 void main() {

@@ -2,11 +2,9 @@ import 'dart:collection';
 import 'dart:math';
 import 'dart:async';
 
-import 'package:math_solver/src/bigint.dart';
-
 import 'enum.dart';
 import 'error.dart';
-import 'isolate.dart';
+import 'eval.dart';
 import 'utils.dart';
 import 'format.dart';
 
@@ -33,18 +31,28 @@ import 'format.dart';
 Future<String> solve(String input, {Map<String, dynamic> valuesToRemap}) async {
   var buffer = StringBuffer();
   try {
+    // √ 9 -> sqrt 9
     var remapped = remapValues(input, valuesToRemap);
     buffer.writeln('remapped values: $remapped');
+
+    // String input to List of <Obj>
     var objs = convertString(remapped);
     buffer.writeln('converted to objs: $objs');
+
+    // Performs checks on objs
     var clean = cleanInput(objs);
     if (clean != objs) {
       buffer.writeln('cleaned: $clean');
     }
+    // Shunting-yard algorithm
     var postfix = infixToPostfix(clean);
     buffer.writeln('in postfix: $postfix');
+
+    // dynamic because can be with double or BigInt
     var eval = await evaluate(postfix);
     buffer.writeln('evaluated: $eval');
+
+    // Only for bigInt, adds scientific notation
     var res = simplify(eval);
     buffer.write('result: $res');
     return res;
@@ -219,48 +227,6 @@ ListQueue<Obj> infixToPostfix(List<Obj> input) {
     }
   }
   return output;
-}
-
-dynamic evaluate(ListQueue<Obj> input) async {
-  var resultStack = ListQueue<Obj>(input.length);
-  for (final token in input) {
-    token.when(num: (val) {
-      resultStack.add(token);
-    }, op: (op) {
-      if (resultStack.length < 2) {
-        throw Exception('Not enough arguments for operation ${op.operator}');
-      }
-      var a = resultStack.removeLast();
-      var b = resultStack.removeLast();
-      resultStack.add(Num(op.operation(a, b)));
-    }, fun: (function) {
-      if (resultStack.isEmpty) {
-        throw Exception(
-            'Not enough arguments for function ${function.function}');
-      }
-      var a = resultStack.removeLast();
-      resultStack.add(Num(function.run(a)));
-    }, undefined: () {
-      throw UndefinedObjectException(token);
-    });
-  }
-  var res = resultStack.last;
-  if (res is Num) {
-    if (res.value == double.infinity) {
-      //If value is higher than double maximum,
-      //Recalculates with bigInt
-
-      return await runIsolate(input).timeout(
-        Duration(seconds: 3),
-        onTimeout: () {
-          throw TimeoutException();
-        },
-      );
-    }
-    return res.value;
-  } else {
-    throw Exception('Result is not a number');
-  }
 }
 
 String simplify(dynamic input) {
