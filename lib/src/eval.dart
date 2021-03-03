@@ -7,7 +7,7 @@ import 'isolate.dart';
 dynamic evaluate(ListQueue<Obj> input) async {
   var resultStack = ListQueue<Obj>(input.length);
   for (final token in input) {
-    token.when(num: (val) {
+    token.when(number: (val) {
       resultStack.add(token);
     }, op: (op) {
       if (resultStack.length < 2) {
@@ -24,7 +24,7 @@ dynamic evaluate(ListQueue<Obj> input) async {
       var a = resultStack.removeLast();
       resultStack.add(Num(function.run(a)));
     }, undefined: () {
-      throw UndefinedObjectException(token);
+      throw UndefinedObjectException(token as Undefined);
     });
   }
   var res = resultStack.last;
@@ -44,8 +44,8 @@ dynamic evaluate(ListQueue<Obj> input) async {
 Future<BigInt> solvewithBigInt(ListQueue<Obj> input) async {
   var resultStack = ListQueue<Obj>(input.length);
   for (final token in input) {
-    token.when(num: (val) {
-      resultStack.add(convertToBig(token));
+    token.when(number: (val) {
+      resultStack.add(convertToBig(token as Num));
     }, bigNum: (val) {
       resultStack.add(token);
     }, op: (op) {
@@ -64,7 +64,7 @@ Future<BigInt> solvewithBigInt(ListQueue<Obj> input) async {
       var a = resultStack.removeLast();
       resultStack.add(BigNum(function.run(a)));
     }, undefined: () {
-      throw UndefinedObjectException(token);
+      throw UndefinedObjectException(token as Undefined);
     });
   }
   var res = resultStack.last;

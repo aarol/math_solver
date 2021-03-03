@@ -84,7 +84,7 @@ double doubleOperation(Operator op, double a, double b) {
       if (a == 0) throw DivideByZeroException();
       return b / a;
     case Operator.Exponent:
-      return math.pow(b, a);
+      return math.pow(b, a) as double;
     default:
       return 0;
   }

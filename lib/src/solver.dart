@@ -27,7 +27,8 @@ import 'utils.dart';
 ///     solve('2×5÷5)', {'×': '*', '÷': '/'}) // '2*5/5'
 ///     solve('2×π)', {'×': '*', 'π': pi}) // '2*3.14159...'
 ///
-Future<String> solve(String input, {Map<String, dynamic> valuesToRemap}) async {
+Future<String> solve(String input,
+    {Map<String, dynamic>? valuesToRemap}) async {
   var buffer = StringBuffer();
   try {
     // √ 9 -> sqrt 9
@@ -62,7 +63,7 @@ Future<String> solve(String input, {Map<String, dynamic> valuesToRemap}) async {
   }
 }
 
-String remapValues(String input, Map<String, dynamic> values) {
+String remapValues(String input, Map<String, dynamic>? values) {
   if (values != null) {
     var inputList = input.split('');
     var hashMap = HashMap<String, dynamic>.from(values);
@@ -184,7 +185,7 @@ ListQueue<Obj> infixToPostfix(List<Obj> input) {
   var operatorStack = ListQueue<Obj>();
 
   for (final token in input) {
-    token.when(num: (_) {
+    token.when(number: (_) {
       output.add(token);
     }, op: (val) {
       while (operatorStack.isNotEmpty) {
@@ -216,7 +217,7 @@ ListQueue<Obj> infixToPostfix(List<Obj> input) {
         throw MissingParenthesisException(isLeft: true);
       }
     }, undefined: () {
-      throw UndefinedObjectException(token);
+      throw UndefinedObjectException(token as Undefined);
     });
   }
   while (operatorStack.isNotEmpty) {

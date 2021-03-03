@@ -18,9 +18,9 @@ class UndefinedObjectException implements Exception {
 
 class MissingParenthesisException implements Exception {
   const MissingParenthesisException({this.isLeft});
-  final bool isLeft;
+  final bool? isLeft;
   @override
-  String toString() => 'Missing parenthesis: ${isLeft ? 'left' : 'right'}';
+  String toString() => 'Missing parenthesis: ${isLeft! ? 'left' : 'right'}';
 }
 
 class TimeoutException implements Exception {

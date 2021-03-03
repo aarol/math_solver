@@ -13,7 +13,7 @@ void main() {
     };
     for (final entry in testValues.entries) {
       test(entry.key, () {
-        expect(remapValues(entry.key, entry.value[0]), entry.value[1]);
+        expect(remapValues(entry.key, entry.value[0] as Map<String, dynamic>?), entry.value[1]);
       });
     }
   });

@@ -13,17 +13,9 @@ enum _Obj {
 }
 enum Operator { Add, Substract, Multiply, Divide, Exponent }
 
-enum Function {
-  SquareRoot,
-  Sin,
-  Tan,
-  Cos,
-}
+enum Function { SquareRoot, Sin, Tan, Cos }
 
-enum Assoc {
-  Left,
-  Right,
-}
+enum Assoc { Left, Right }
 
 abstract class Obj extends Equatable {
   const Obj(this._type);
@@ -31,30 +23,30 @@ abstract class Obj extends Equatable {
   //Uses private enum to match and cas
   final _Obj _type;
 
-  R when<R extends Obj>({
-    R Function(Num) num,
-    R Function(BigNum) bigNum,
-    R Function(Op) op,
-    R Function(Fun) fun,
-    R Function() parL,
-    R Function() parR,
-    R Function() undefined,
+  void when<R extends Obj>({
+    Function(Num)? number,
+    Function(BigNum)? bigNum,
+    Function(Op)? op,
+    Function(Fun)? fun,
+    Function()? parL,
+    Function()? parR,
+    Function()? undefined,
   }) {
     switch (_type) {
       case _Obj.Num:
-        return num(this as Num);
+        return number!(this as Num);
       case _Obj.BigNum:
-        return bigNum(this as BigNum);
+        return bigNum!(this as BigNum);
       case _Obj.Op:
-        return op(this as Op);
+        return op!(this as Op);
       case _Obj.Fun:
-        return fun(this as Fun);
+        return fun!(this as Fun);
       case _Obj.ParL:
-        return parL();
+        return parL!();
       case _Obj.ParR:
-        return parR();
+        return parR!();
       default:
-        return undefined();
+        return undefined!();
     }
   }
 
