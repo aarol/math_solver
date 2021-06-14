@@ -1,16 +1,17 @@
 import 'package:equatable/equatable.dart';
-import 'dart:math';
-import 'utils.dart';
+import 'dart:math' as math;
+
+import 'util.dart';
 
 enum _Obj {
   Num,
-  BigNum,
   Op,
   Fun,
   ParL,
   ParR,
   Undefined,
 }
+
 enum Operator { Add, Substract, Multiply, Divide, Exponent }
 
 enum Function { SquareRoot, Sin, Tan, Cos }
@@ -20,23 +21,20 @@ enum Assoc { Left, Right }
 abstract class Obj extends Equatable {
   const Obj(this._type);
 
-  //Uses private enum to match and cas
+  //Uses private enum to match
   final _Obj _type;
 
   void when<R extends Obj>({
-    Function(Num)? number,
-    Function(BigNum)? bigNum,
-    Function(Op)? op,
-    Function(Fun)? fun,
-    Function()? parL,
-    Function()? parR,
-    Function()? undefined,
+    void Function(Num)? number,
+    void Function(Op)? op,
+    void Function(Fun)? fun,
+    void Function()? parL,
+    void Function()? parR,
+    void Function()? undefined,
   }) {
     switch (_type) {
       case _Obj.Num:
         return number!(this as Num);
-      case _Obj.BigNum:
-        return bigNum!(this as BigNum);
       case _Obj.Op:
         return op!(this as Op);
       case _Obj.Fun:
@@ -57,16 +55,7 @@ abstract class Obj extends Equatable {
 class Num extends Obj {
   const Num(this.value) : super(_Obj.Num);
   final double value;
-  @override
-  bool get stringify => true;
-  @override
-  List<Object> get props => [value];
-}
 
-class BigNum extends Obj {
-  const BigNum(this.value) : super(_Obj.BigNum);
-
-  final BigInt value;
   @override
   bool get stringify => true;
   @override
@@ -102,14 +91,43 @@ class Op extends Obj {
     }
   }
 
-  dynamic operation(Obj first, Obj second) {
-    if (first is Num && second is Num) {
-      return doubleOperation(operator, first.value, second.value);
+  static Obj from(String char) {
+    switch (char) {
+      case '+':
+        return Op(Operator.Add);
+      case '-':
+        return Op(Operator.Substract);
+      case '*':
+        return Op(Operator.Multiply);
+      case '/':
+        return Op(Operator.Divide);
+      case '^':
+        return Op(Operator.Exponent);
+      case '(':
+        return ParL();
+      case ')':
+        return ParR();
+      default:
+        return Undefined(char);
     }
-    if (first is BigNum && second is BigNum) {
-      return bigIntOperation(operator, first.value, second.value);
+  }
+
+  double operation(double a, double b) {
+    switch (operator) {
+      case Operator.Add:
+        return b + a;
+      case Operator.Substract:
+        return b - a;
+      case Operator.Multiply:
+        return b * a;
+      case Operator.Divide:
+        if (a == 0) throw Exception('Division by zero');
+        return b / a;
+      case Operator.Exponent:
+        return math.pow(b, a) as double;
+      default:
+        return 0;
     }
-    throw Exception('$first or $second is not a valid number');
   }
 
   @override
@@ -121,36 +139,34 @@ class Op extends Obj {
 class Fun extends Obj {
   const Fun(this.function) : super(_Obj.Fun);
   final Function function;
-  dynamic run(Obj first) {
-    if (first is Num) {
-      var a = first.value;
-      switch (function) {
-        case Function.SquareRoot:
-          return sqrt(a);
-        case Function.Sin:
-          return sin(a * degrees2Radians);
-        case Function.Cos:
-          return cos(a * degrees2Radians);
-        case Function.Tan:
-          return tan(a * degrees2Radians);
-        default:
-          return 0;
-      }
+
+  static Obj from(String char) {
+    switch (char) {
+      case 'sin':
+        return Fun(Function.Sin);
+      case 'cos':
+        return Fun(Function.Cos);
+      case 'tan':
+        return Fun(Function.Tan);
+      case 'sqrt':
+        return Fun(Function.SquareRoot);
+      default:
+        return Undefined(char);
     }
-    if (first is BigNum) {
-      var a = first.value.toDouble();
-      switch (function) {
-        case Function.SquareRoot:
-          return BigInt.from(sqrt(a));
-        case Function.Sin:
-          return BigInt.from(sin(a * degrees2Radians));
-        case Function.Cos:
-          return BigInt.from(cos(a * degrees2Radians));
-        case Function.Tan:
-          return BigInt.from(tan(a * degrees2Radians));
-        default:
-          return 0;
-      }
+  }
+
+  double use(double a) {
+    switch (function) {
+      case Function.SquareRoot:
+        return math.sqrt(a);
+      case Function.Sin:
+        return math.sin(a * degrees2Radians);
+      case Function.Cos:
+        return math.cos(a * degrees2Radians);
+      case Function.Tan:
+        return math.tan(a * degrees2Radians);
+      default:
+        return 0;
     }
   }
 
