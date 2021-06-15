@@ -9,6 +9,7 @@ void main() {
 
   final map = <String, List<Obj>>{
     '1+2': [Num(1), Op(Operator.Add), Num(2)],
+    '2^8': [Num(2), Op(Operator.Exponent), Num(8)],
     '2.5*4.000001': [Num(2.5), Op(Operator.Multiply), Num(4.000001)],
     '100*0': [Num(100), Op(Operator.Multiply), Num(0)],
     'sin(3^2)': [
@@ -39,6 +40,14 @@ void main() {
       Num(2),
       ParR(),
     ],
+    '10sqrt(81)': [
+      Num(10),
+      Op(Operator.Multiply),
+      Fun(Function.SquareRoot),
+      ParL(),
+      Num(81),
+      ParR(),
+    ],
     // in postfix
     '2 1 +': [Num(2), Num(1), Op(Operator.Add)],
     '2 2 ^ 2 / 2 -': [
@@ -52,9 +61,11 @@ void main() {
     ],
   };
 
-  for (var entry in map.entries) {
-    test(entry.key, () {
-      expect(tokenizer.tokenize(entry.key), entry.value);
-    });
-  }
+  group('tokenizer', () {
+    for (var entry in map.entries) {
+      test(entry.key, () {
+        expect(tokenizer.tokenize(entry.key), entry.value);
+      });
+    }
+  });
 }

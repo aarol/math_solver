@@ -7,11 +7,11 @@ const double degrees2Radians = math.pi / 180.0;
 
 extension IsBool on String {
   bool get isNumeric {
-    return '012345679.'.contains(this);
+    return '0123456789.'.contains(this);
   }
 
   bool get isFunctional {
-    return 'sincoqrat'.contains(this);
+    return 'abcdefghijklmnopqrstuvwxyz'.contains(toLowerCase());
   }
 }
 

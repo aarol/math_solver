@@ -22,7 +22,7 @@ class DefaultInfixToPostfix implements InfixToPostfix {
         op: (op) {
           while (operatorStack.isNotEmpty) {
             var last = operatorStack.last;
-            // pop every obj in stack which has a
+            // pop every obj in stack which isn't higher precedence
             if (shouldPop(op, last)) {
               output.add(operatorStack.removeLast());
             } else {

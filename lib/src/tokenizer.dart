@@ -5,7 +5,6 @@ import 'obj.dart';
 import 'util.dart';
 
 abstract class Tokenizer {
-  const Tokenizer();
   List<Obj> tokenize(String input);
 }
 
@@ -44,7 +43,7 @@ class DefaultTokenizer implements Tokenizer {
         final inputNum = char.isNumeric;
         final stackNum = stack.first.isNumeric;
         // if not, then clear
-        if (inputNum && !stackNum || !inputNum && stackNum) stack.clear();
+        if (inputNum && !stackNum || !inputNum && stackNum) clear();
       }
       stack.add(char);
     }
@@ -75,6 +74,7 @@ class DefaultTokenizer implements Tokenizer {
 
   List<Obj> _clean(List<Obj> input) {
     for (var i = 0; i < input.length; i++) {
+      // first item of the list
       // -=-=-=-=-
       // ^
       if (i == 0) {
@@ -89,6 +89,7 @@ class DefaultTokenizer implements Tokenizer {
         } else if (input[0] == Op(Operator.Add)) {
           input.remove(0);
         }
+        // rest of the list
         // -=-=-=-=-
         //  ^^^^^^^^
       } else {

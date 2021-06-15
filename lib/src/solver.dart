@@ -1,5 +1,5 @@
-import 'package:math_solver/src/infixToPostfix.dart';
-import 'package:math_solver/src/tokenizer.dart';
+import 'infixToPostfix.dart';
+import 'tokenizer.dart';
 
 import 'evaluator.dart';
 
@@ -7,6 +7,7 @@ import 'evaluator.dart';
 ///
 /// Has efficient default implementations
 /// which can also be implemented by the developer.
+
 class Solver {
   const Solver({
     this.tokenizer = const DefaultTokenizer(),

@@ -1,3 +1,3 @@
 library math_solver;
 
-export 'src/solver.dart' show solve;
+export 'src/solver.dart';

@@ -13,13 +13,20 @@ void main() {
     tokenize('2+1'): tokenize('2 1 +'),
     tokenize('2^2/2-2'): tokenize('2 2 ^ 2 / 2 -'),
     tokenize('12/(2+2*2)'): tokenize('12 2 2 2 * + /'),
-    tokenize('sin(tan(cos(5)))'): tokenize('5 cos tan sin'),
+    tokenize('sin(tan(cos(5)))'): [
+      Num(5.0),
+      Fun(Function.Cos),
+      Fun(Function.Tan),
+      Fun(Function.Sin)
+    ],
     tokenize('(1)-634*(1-42)'): tokenize('1 634 1 42 - * -'),
   };
 
-  for (var entry in map.entries) {
-    test(entry.key, () {
-      expect(infixPostfix.infixToPostfix(entry.key), entry.value);
-    });
-  }
+  group('infixToPostfix', () {
+    for (var entry in map.entries) {
+      test(entry.key, () {
+        expect(infixPostfix.infixToPostfix(entry.key), entry.value);
+      });
+    }
+  });
 }

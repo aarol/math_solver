@@ -15,15 +15,30 @@ void main() {
 
   final evaluator = DefaultEvaluator();
 
-  final map = <List<Obj>, String>{
-    postfix(tokenize('1+2')): '3',
-    postfix(tokenize('2 ^ 2 / 2 - 2')): '0',
-    postfix(tokenize('12 / (2 + 2 * 2)')): '2'
-  };
+  group('evaluate', () {
+    final map = <List<Obj>, String>{
+      postfix(tokenize('1+2')): '3',
+      postfix(tokenize('2 ^ 2 / 2 - 2')): '0',
+      postfix(tokenize('12 / (2 + 2 * 2)')): '2'
+    };
+    for (var entry in map.entries) {
+      test(entry.key, () {
+        expect(evaluator.evaluate(entry.key), entry.value);
+      });
+    }
+  });
 
-  for (var entry in map.entries) {
-    test(entry.key, () {
-      expect(evaluator.evaluate(entry.key), entry.value);
-    });
-  }
+  group('format', () {
+    final map = <String, String>{
+      '13.25': '13.25',
+      '-0.000': '0',
+      '2.000': '2',
+    };
+
+    for (var entry in map.entries) {
+      test(entry.key, () {
+        expect(evaluator.format(entry.key), entry.value);
+      });
+    }
+  });
 }
