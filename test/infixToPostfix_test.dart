@@ -20,6 +20,12 @@ void main() {
       Fun(Function.Sin)
     ],
     tokenize('(1)-634*(1-42)'): tokenize('1 634 1 42 - * -'),
+    tokenize('sqrt(4) * 2'): [
+      Num(4),
+      Fun(Function.SquareRoot),
+      Num(2),
+      Op(Operator.Multiply),
+    ],
   };
 
   group('infixToPostfix', () {
@@ -28,5 +34,16 @@ void main() {
         expect(infixPostfix.infixToPostfix(entry.key), entry.value);
       });
     }
+  });
+
+  test('specific', () {
+    final i = tokenize('sqrt(4) * 2');
+    final o = [
+      Num(4),
+      Fun(Function.SquareRoot),
+      Num(2),
+      Op(Operator.Multiply),
+    ];
+    expect(infixPostfix.infixToPostfix(i), o);
   });
 }

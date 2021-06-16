@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:math_solver/src/evaluator.dart';
 import 'package:math_solver/src/infixToPostfix.dart';
 import 'package:math_solver/src/obj.dart';

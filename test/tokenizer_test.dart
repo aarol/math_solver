@@ -48,6 +48,14 @@ void main() {
       Num(81),
       ParR(),
     ],
+    'sqrt 1+2': [
+      Fun(Function.SquareRoot),
+      ParL(),
+      Num(1),
+      ParR(),
+      Op(Operator.Add),
+      Num(2),
+    ],
     // in postfix
     '2 1 +': [Num(2), Num(1), Op(Operator.Add)],
     '2 2 ^ 2 / 2 -': [
@@ -67,5 +75,19 @@ void main() {
         expect(tokenizer.tokenize(entry.key), entry.value);
       });
     }
+  });
+
+  group('replacer', () {
+    var tInput = '√1×2÷8';
+    var tOutput = 'sqrt1*2/8';
+    test('√1×2÷8', () {
+      expect(
+          tokenizer.replace(tInput, {
+            '×': '*',
+            '√': 'sqrt',
+            '÷': '/',
+          }),
+          tOutput);
+    });
   });
 }

@@ -2,7 +2,7 @@ import 'package:math_solver/math_solver.dart';
 import 'package:test/test.dart';
 
 void main() {
-  final solver = Solver();
+  var solver = Solver();
 
   group('solver', () {
     group('simple', () {
@@ -24,6 +24,7 @@ void main() {
         '1.5*3^2': '13.5',
         '10sqrt(81)': '90',
         '2^8': '256',
+        '2sin(90*2-3*30)-1.5': '0.5',
       };
 
       for (var entry in map.entries) {
@@ -31,6 +32,24 @@ void main() {
           expect(solver.solve(entry.key), entry.value);
         });
       }
+    });
+
+    group('replace', () {
+      final tReplaced = {
+        '×': '*',
+        '√': 'sqrt',
+        '÷': '/',
+      };
+
+      solver = Solver(replace: tReplaced);
+      final input = '√1×2÷8';
+      var output = '0.25';
+      test(input, () {
+        expect(
+          solver.solve(input),
+          output,
+        );
+      });
     });
   });
 }
