@@ -1,26 +1,42 @@
 import 'dart:collection';
 import 'dart:math' as math;
 
+import 'package:meta/meta.dart';
+
 import 'obj.dart';
 import 'util.dart';
 
 abstract class Tokenizer {
-  List<Obj> tokenize(String input);
+  List<Obj> tokenize(String input, [Map<String, dynamic>? replace]);
 }
 
 class DefaultTokenizer implements Tokenizer {
   const DefaultTokenizer();
   @override
-  List<Obj> tokenize(String input) {
-    final result = _tokenize(input);
+  List<Obj> tokenize(String input, [Map<String, dynamic>? toReplace]) {
+    var replaced = replace(input, toReplace);
+    final result = _tokenize(replaced);
     return _clean(result);
+  }
+
+  @visibleForTesting
+  String replace(String input, Map<String, dynamic>? replace) {
+    if (replace == null || replace.isEmpty) return input;
+    var list = input.split('');
+    for (var i = 0; i < list.length; i++) {
+      var possibleValue = replace[list[i]];
+      if (possibleValue != null) {
+        list[i] = possibleValue;
+      }
+    }
+    return list.join();
   }
 
   List<Obj> _tokenize(String input) {
     final res = Queue<Obj>();
     final stack = Queue<String>();
 
-    void clear() {
+    var clear = () {
       if (stack.isEmpty) {
         return;
       }
@@ -35,9 +51,9 @@ class DefaultTokenizer implements Tokenizer {
       }
       stack.clear();
       res.add(obj);
-    }
+    };
 
-    void addStack(String char) {
+    var addStack = (String char) {
       // check if char shares type with other items in stack
       if (stack.isNotEmpty) {
         final inputNum = char.isNumeric;
@@ -46,7 +62,7 @@ class DefaultTokenizer implements Tokenizer {
         if (inputNum && !stackNum || !inputNum && stackNum) clear();
       }
       stack.add(char);
-    }
+    };
 
     for (var char in input.split('')) {
       // number or function might be longer than 1 char
@@ -108,6 +124,15 @@ class DefaultTokenizer implements Tokenizer {
         // 2sqrt(9) -> 2*sqrt(9)
         if (input[i - 1] is Num && input[i] is Fun) {
           input.insert(i, Op(Operator.Multiply));
+        }
+        // sqrt 1 / 2 -> sqrt(1)/2
+        if (input[i - 1] is Fun && input[i] is Num) {
+          // sqrt 1
+          //       ^
+          input.insert(i + 1, ParR());
+          // sqrt 1 )
+          //     ^
+          input.insert(i, ParL());
         }
       }
     }

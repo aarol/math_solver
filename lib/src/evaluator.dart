@@ -1,5 +1,7 @@
 import 'dart:collection';
 
+import 'package:meta/meta.dart';
+
 import 'obj.dart';
 
 abstract class Evaluator {
@@ -17,6 +19,7 @@ class DefaultEvaluator implements Evaluator {
     return format(res);
   }
 
+  @visibleForTesting
   String evaluator(List<Obj> input) {
     var resultStack = Queue<Obj>();
     for (var token in input) {
@@ -49,6 +52,7 @@ class DefaultEvaluator implements Evaluator {
     }
   }
 
+  @visibleForTesting
   String format(String input) {
     var value = double.tryParse(input);
     if (value == null) return '';

@@ -28,8 +28,9 @@ bool shouldPop(Op current, Obj last) {
   }
   //functions always have precedence of 1
   if (last is Fun) {
-    return current.precedence < 1 ||
-        (current.precedence == 1 && current.assoc == Assoc.Left);
+    return true;
+    // return current.precedence < 1 ||
+    //     (current.precedence == 1 && current.assoc == Assoc.Left);
   }
   throw Exception('Cannot compare ${[current, last]}');
 }

@@ -13,14 +13,16 @@ class Solver {
     this.tokenizer = const DefaultTokenizer(),
     this.infixToPostfix = const DefaultInfixToPostfix(),
     this.evaluator = const DefaultEvaluator(),
+    this.replace = const {},
   });
 
   final Tokenizer tokenizer;
   final InfixToPostfix infixToPostfix;
   final Evaluator evaluator;
+  final Map<String, dynamic> replace;
 
   String solve(String input) {
-    final objects = tokenizer.tokenize(input);
+    final objects = tokenizer.tokenize(input, replace);
     final postfix = infixToPostfix.infixToPostfix(objects);
     final eval = evaluator.evaluate(postfix);
     return eval;
