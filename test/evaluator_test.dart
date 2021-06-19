@@ -26,16 +26,17 @@ void main() {
     }
   });
 
-  group('format', () {
-    final map = <String, String>{
-      '13.25': '13.25',
-      '-0.000': '0',
-      '2.000': '2',
+  group('formatDouble', () {
+    final map = <double, String>{
+      13.25: '13.25',
+      -0.000: '0',
+      2.000: '2',
+      0.30000000004: '0.3',
     };
 
     for (var entry in map.entries) {
       test(entry.key, () {
-        expect(evaluator.format(entry.key), entry.value);
+        expect(evaluator.formatDouble(entry.key), entry.value);
       });
     }
   });

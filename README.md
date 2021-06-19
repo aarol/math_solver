@@ -1,5 +1,7 @@
 # math_solver
 
+![Tests](https://github.com/aarol/math_solver/actions/workflows/dart.yml/badge.svg)
+
 Solves an mathematical expression from a string.
 
 Use this package when creating a calculator app. 
