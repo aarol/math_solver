@@ -5,19 +5,19 @@ import 'dart:math' as math;
 import 'util.dart';
 
 enum _Obj {
-  Num,
-  Op,
-  Fun,
-  ParL,
-  ParR,
-  Undefined,
+  num,
+  op,
+  fun,
+  parL,
+  parR,
+  undefined,
 }
 
-enum Operator { Add, Substract, Multiply, Divide, Exponent }
+enum Operator { add, substract, multiply, divide, exponent }
 
-enum Function { SquareRoot, Sin, Tan, Cos }
+enum Function { squareRoot, sin, tan, cos }
 
-enum Assoc { Left, Right }
+enum Assoc { left, right }
 
 abstract class Obj extends Equatable {
   const Obj(this._type);
@@ -34,15 +34,15 @@ abstract class Obj extends Equatable {
     void Function()? undefined,
   }) {
     switch (_type) {
-      case _Obj.Num:
+      case _Obj.num:
         return number!(this as Num);
-      case _Obj.Op:
+      case _Obj.op:
         return op!(this as Op);
-      case _Obj.Fun:
+      case _Obj.fun:
         return fun!(this as Fun);
-      case _Obj.ParL:
+      case _Obj.parL:
         return parL!();
-      case _Obj.ParR:
+      case _Obj.parR:
         return parR!();
       default:
         return undefined!();
@@ -54,7 +54,7 @@ abstract class Obj extends Equatable {
 }
 
 class Num extends Obj {
-  const Num(this.value) : super(_Obj.Num);
+  const Num(this.value) : super(_Obj.num);
   final double value;
 
   @override
@@ -64,12 +64,12 @@ class Num extends Obj {
 }
 
 class Op extends Obj {
-  const Op(this.operator) : super(_Obj.Op);
+  const Op(this.operator) : super(_Obj.op);
   final Operator operator;
 
   int get precedence => kOperatorPrecedenceTable[operator] ?? -1;
 
-  Assoc get assoc => operator == Operator.Exponent ? Assoc.Right : Assoc.Left;
+  Assoc get assoc => operator == Operator.exponent ? Assoc.right : Assoc.left;
 
   static Obj from(String char) {
     return kObjParseTable[char] ?? Undefined(char);
@@ -91,7 +91,7 @@ class Op extends Obj {
 }
 
 class Fun extends Obj {
-  const Fun(this.function) : super(_Obj.Fun);
+  const Fun(this.function) : super(_Obj.fun);
   final Function function;
 
   static Obj from(String char) {
@@ -100,13 +100,13 @@ class Fun extends Obj {
 
   double use(double a) {
     switch (function) {
-      case Function.SquareRoot:
+      case Function.squareRoot:
         return math.sqrt(a);
-      case Function.Sin:
+      case Function.sin:
         return math.sin(a * degrees2Radians);
-      case Function.Cos:
+      case Function.cos:
         return math.cos(a * degrees2Radians);
-      case Function.Tan:
+      case Function.tan:
         return math.tan(a * degrees2Radians);
       default:
         return 0;
@@ -120,20 +120,20 @@ class Fun extends Obj {
 }
 
 class ParL extends Obj {
-  const ParL() : super(_Obj.ParL);
+  const ParL() : super(_Obj.parL);
 
   @override
   String toString() => 'Par(';
 }
 
 class ParR extends Obj {
-  const ParR() : super(_Obj.ParR);
+  const ParR() : super(_Obj.parR);
   @override
   String toString() => 'Par)';
 }
 
 class Undefined extends Obj {
-  const Undefined(this.from) : super(_Obj.Undefined);
+  const Undefined(this.from) : super(_Obj.undefined);
   final String from;
   @override
   String toString() => 'Undefined($from)';

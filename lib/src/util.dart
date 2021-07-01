@@ -24,7 +24,7 @@ bool shouldPop(Op current, Obj last) {
   }
   if (last is Op) {
     return current.precedence < last.precedence ||
-        (current.precedence == last.precedence && current.assoc == Assoc.Left);
+        (current.precedence == last.precedence && current.assoc == Assoc.left);
   }
   //functions always have precedence of 1
   if (last is Fun) {

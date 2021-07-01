@@ -1,4 +1,4 @@
-import 'infixToPostfix.dart';
+import 'infix_postfix.dart';
 import 'tokenizer.dart';
 
 import 'evaluator.dart';

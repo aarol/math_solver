@@ -2,18 +2,18 @@ import 'package:math_solver/src/obj.dart';
 import 'dart:math' as math;
 
 const kFunctionTable = <String, Fun>{
-  'sin': Fun(Function.Sin),
-  'cos': Fun(Function.Cos),
-  'tan': Fun(Function.Tan),
-  'sqrt': Fun(Function.SquareRoot),
+  'sin': Fun(Function.sin),
+  'cos': Fun(Function.cos),
+  'tan': Fun(Function.tan),
+  'sqrt': Fun(Function.squareRoot),
 };
 
 final kOperationTable = <Operator, double Function(double a, double b)>{
-  Operator.Add: (a, b) => b + a,
-  Operator.Substract: (a, b) => b - a,
-  Operator.Multiply: (a, b) => b * a,
-  Operator.Exponent: (a, b) => math.pow(b, a) as double,
-  Operator.Divide: (a, b) {
+  Operator.add: (a, b) => b + a,
+  Operator.substract: (a, b) => b - a,
+  Operator.multiply: (a, b) => b * a,
+  Operator.exponent: (a, b) => math.pow(b, a) as double,
+  Operator.divide: (a, b) {
     if (a == 0) {
       throw IntegerDivisionByZeroException();
     }
@@ -22,19 +22,19 @@ final kOperationTable = <Operator, double Function(double a, double b)>{
 };
 
 const kObjParseTable = <String, Obj>{
-  '+': Op(Operator.Add),
-  '-': Op(Operator.Substract),
-  '*': Op(Operator.Multiply),
-  '/': Op(Operator.Divide),
-  '^': Op(Operator.Exponent),
+  '+': Op(Operator.add),
+  '-': Op(Operator.substract),
+  '*': Op(Operator.multiply),
+  '/': Op(Operator.divide),
+  '^': Op(Operator.exponent),
   '(': ParL(),
   ')': ParR(),
 };
 
 const kOperatorPrecedenceTable = <Operator, int>{
-  Operator.Add: 2,
-  Operator.Substract: 2,
-  Operator.Multiply: 3,
-  Operator.Divide: 3,
-  Operator.Exponent: 4,
+  Operator.add: 2,
+  Operator.substract: 2,
+  Operator.multiply: 3,
+  Operator.divide: 3,
+  Operator.exponent: 4,
 };

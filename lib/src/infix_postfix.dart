@@ -1,7 +1,7 @@
 import 'dart:collection';
 
-import 'package:math_solver/src/obj.dart';
-import 'package:math_solver/src/util.dart';
+import 'obj.dart';
+import 'util.dart';
 
 abstract class InfixToPostfix {
   List<Obj> infixToPostfix(List<Obj> input);

@@ -36,7 +36,7 @@ class DefaultTokenizer implements Tokenizer {
     final res = Queue<Obj>();
     final stack = Queue<String>();
 
-    var clear = () {
+    void clear() {
       if (stack.isEmpty) {
         return;
       }
@@ -51,9 +51,9 @@ class DefaultTokenizer implements Tokenizer {
       }
       stack.clear();
       res.add(obj);
-    };
+    }
 
-    var addStack = (String char) {
+    void addStack(String char) {
       // check if char shares type with other items in stack
       if (stack.isNotEmpty) {
         final inputNum = char.isNumeric;
@@ -62,7 +62,7 @@ class DefaultTokenizer implements Tokenizer {
         if (inputNum && !stackNum || !inputNum && stackNum) clear();
       }
       stack.add(char);
-    };
+    }
 
     for (var char in input.split('')) {
       // number or function might be longer than 1 char
@@ -96,14 +96,14 @@ class DefaultTokenizer implements Tokenizer {
       if (i == 0) {
         //Remove '-' at start of input and reverse value
         //- 2 + 5 -> -2 + 5
-        if (input[0] == Op(Operator.Substract)) {
+        if (input[0] == Op(Operator.substract)) {
           var val = Num(-(input[1] as Num).value);
           input[1] = val;
           input.removeAt(0);
 
           //+ 2 + 5 -> 2 + 5
-        } else if (input[0] == Op(Operator.Add)) {
-          input.remove(0);
+        } else if (input[0] == Op(Operator.add)) {
+          input.removeAt(0);
         }
         // rest of the list
         // -=-=-=-=-
@@ -111,19 +111,19 @@ class DefaultTokenizer implements Tokenizer {
       } else {
         //2( -> 2*(
         if (input[i - 1] is Num && input[i] == ParL()) {
-          input.insert(i, Op(Operator.Multiply));
+          input.insert(i, Op(Operator.multiply));
         }
         // 2π -> 2*π
         // should only happen with pi
         if (input[i - 1] is Num && input[i] == Num(math.pi)) {
-          input.insert(i, Op(Operator.Multiply));
+          input.insert(i, Op(Operator.multiply));
         }
         if (input[i - 1] == Num(math.pi) && input[i] is Num) {
-          input.insert(i, Op(Operator.Multiply));
+          input.insert(i, Op(Operator.multiply));
         }
         // 2sqrt(9) -> 2*sqrt(9)
         if (input[i - 1] is Num && input[i] is Fun) {
-          input.insert(i, Op(Operator.Multiply));
+          input.insert(i, Op(Operator.multiply));
         }
         // sqrt 1 / 2 -> sqrt(1)/2
         if (input[i - 1] is Fun && input[i] is Num) {

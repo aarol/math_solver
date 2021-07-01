@@ -8,64 +8,64 @@ void main() {
   final tokenizer = DefaultTokenizer();
 
   final map = <String, List<Obj>>{
-    '1+2': [Num(1), Op(Operator.Add), Num(2)],
-    '2^8': [Num(2), Op(Operator.Exponent), Num(8)],
-    '2.5*4.000001': [Num(2.5), Op(Operator.Multiply), Num(4.000001)],
-    '100*0': [Num(100), Op(Operator.Multiply), Num(0)],
+    '1+2': [Num(1), Op(Operator.add), Num(2)],
+    '2^8': [Num(2), Op(Operator.exponent), Num(8)],
+    '2.5*4.000001': [Num(2.5), Op(Operator.multiply), Num(4.000001)],
+    '100*0': [Num(100), Op(Operator.multiply), Num(0)],
     'sin(3^2)': [
-      Fun(Function.Sin),
+      Fun(Function.sin),
       ParL(),
       Num(3),
-      Op(Operator.Exponent),
+      Op(Operator.exponent),
       Num(2),
       ParR(),
     ],
     'tan(π/2.99)': [
-      Fun(Function.Tan),
+      Fun(Function.tan),
       ParL(),
       Num(pi),
-      Op(Operator.Divide),
+      Op(Operator.divide),
       Num(2.99),
       ParR()
     ],
     '2(sqrt(9)+2)': [
       Num(2),
-      Op(Operator.Multiply),
+      Op(Operator.multiply),
       ParL(),
-      Fun(Function.SquareRoot),
+      Fun(Function.squareRoot),
       ParL(),
       Num(9),
       ParR(),
-      Op(Operator.Add),
+      Op(Operator.add),
       Num(2),
       ParR(),
     ],
     '10sqrt(81)': [
       Num(10),
-      Op(Operator.Multiply),
-      Fun(Function.SquareRoot),
+      Op(Operator.multiply),
+      Fun(Function.squareRoot),
       ParL(),
       Num(81),
       ParR(),
     ],
     'sqrt 1+2': [
-      Fun(Function.SquareRoot),
+      Fun(Function.squareRoot),
       ParL(),
       Num(1),
       ParR(),
-      Op(Operator.Add),
+      Op(Operator.add),
       Num(2),
     ],
     // in postfix
-    '2 1 +': [Num(2), Num(1), Op(Operator.Add)],
+    '2 1 +': [Num(2), Num(1), Op(Operator.add)],
     '2 2 ^ 2 / 2 -': [
       Num(2),
       Num(2),
-      Op(Operator.Exponent),
+      Op(Operator.exponent),
       Num(2),
-      Op(Operator.Divide),
+      Op(Operator.divide),
       Num(2),
-      Op(Operator.Substract)
+      Op(Operator.substract)
     ],
   };
 

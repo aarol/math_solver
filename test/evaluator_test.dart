@@ -1,5 +1,5 @@
 import 'package:math_solver/src/evaluator.dart';
-import 'package:math_solver/src/infixToPostfix.dart';
+import 'package:math_solver/src/infix_postfix.dart';
 import 'package:math_solver/src/obj.dart';
 import 'package:math_solver/src/tokenizer.dart';
 import 'package:test/test.dart';
@@ -8,8 +8,8 @@ void main() {
   final tokenizer = DefaultTokenizer();
   final infixPostfix = DefaultInfixToPostfix();
 
-  final tokenize = (str) => tokenizer.tokenize(str);
-  final postfix = (ls) => infixPostfix.infixToPostfix(ls);
+  List<Obj> tokenize(String str) => tokenizer.tokenize(str);
+  List<Obj> postfix(List<Obj> ls) => infixPostfix.infixToPostfix(ls);
 
   final evaluator = DefaultEvaluator();
 
