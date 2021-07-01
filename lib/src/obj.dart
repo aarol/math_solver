@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:math_solver/src/obj/tables.dart';
 import 'dart:math' as math;
 
 import 'util.dart';
@@ -65,68 +66,21 @@ class Num extends Obj {
 class Op extends Obj {
   const Op(this.operator) : super(_Obj.Op);
   final Operator operator;
-  int get precedence {
-    switch (operator) {
-      case Operator.Add:
-        return 2;
-      case Operator.Substract:
-        return 2;
-      case Operator.Multiply:
-        return 3;
-      case Operator.Divide:
-        return 3;
-      case Operator.Exponent:
-        return 4;
-      default:
-        return -1;
-    }
-  }
 
-  Assoc get assoc {
-    switch (operator) {
-      case Operator.Exponent:
-        return Assoc.Right;
-      default:
-        return Assoc.Left;
-    }
-  }
+  int get precedence => kOperatorPrecedenceTable[operator] ?? -1;
+
+  Assoc get assoc => operator == Operator.Exponent ? Assoc.Right : Assoc.Left;
 
   static Obj from(String char) {
-    switch (char) {
-      case '+':
-        return Op(Operator.Add);
-      case '-':
-        return Op(Operator.Substract);
-      case '*':
-        return Op(Operator.Multiply);
-      case '/':
-        return Op(Operator.Divide);
-      case '^':
-        return Op(Operator.Exponent);
-      case '(':
-        return ParL();
-      case ')':
-        return ParR();
-      default:
-        return Undefined(char);
-    }
+    return kObjParseTable[char] ?? Undefined(char);
   }
 
-  double operation(double a, double b) {
-    switch (operator) {
-      case Operator.Add:
-        return b + a;
-      case Operator.Substract:
-        return b - a;
-      case Operator.Multiply:
-        return b * a;
-      case Operator.Divide:
-        if (a == 0) throw Exception('Division by zero');
-        return b / a;
-      case Operator.Exponent:
-        return math.pow(b, a) as double;
-      default:
-        return 0;
+  double use(double a, double b) {
+    var fun = kOperationTable[operator]?.call(a, b);
+    if (fun != null) {
+      return fun;
+    } else {
+      throw Exception('No operation found for $operator');
     }
   }
 
@@ -141,18 +95,7 @@ class Fun extends Obj {
   final Function function;
 
   static Obj from(String char) {
-    switch (char) {
-      case 'sin':
-        return Fun(Function.Sin);
-      case 'cos':
-        return Fun(Function.Cos);
-      case 'tan':
-        return Fun(Function.Tan);
-      case 'sqrt':
-        return Fun(Function.SquareRoot);
-      default:
-        return Undefined(char);
-    }
+    return kFunctionTable[char] ?? Undefined(char);
   }
 
   double use(double a) {

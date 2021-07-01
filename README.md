@@ -1,19 +1,13 @@
 # math_solver
 
-![Tests](https://github.com/aarol/math_solver/actions/workflows/dart.yml/badge.svg)
+![Tests](https://github.com/aarol/math_solver/actions/workflows/tests.yml/badge.svg)
 
 Solves an mathematical expression from a string.
 
-Use this package when creating a calculator app. 
-It solves basic operations, but also functions like square root.
+Examples:
+```
+solve('1+2') == '3';
+solve(3.5*sin(3^2*10)) == '3.5';
+```
 
-## Getting Started
-
-This project is a starting point for a Dart
-[package](https://flutter.dev/developing-packages/),
-a library module containing code that can be shared easily across
-multiple Flutter or Dart projects.
-
-For help getting started with Flutter, view our 
-[online documentation](https://flutter.dev/docs), which offers tutorials, 
-samples, guidance on mobile development, and a full API reference.
+Written in pure Dart, it solves mathematical expressions fast

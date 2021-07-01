@@ -3,7 +3,6 @@ import 'dart:collection';
 import 'package:meta/meta.dart';
 
 import 'obj.dart';
-import 'dart:math' as math;
 
 abstract class Evaluator {
   /// takes in a postfix-orderer input
@@ -37,7 +36,7 @@ class DefaultEvaluator implements Evaluator {
           }
           var a = resultStack.removeLast() as Num;
           var b = resultStack.removeLast() as Num;
-          resultStack.add(Num(op.operation(a.value, b.value)));
+          resultStack.add(Num(op.use(a.value, b.value)));
         },
         fun: (fn) {
           if (resultStack.isEmpty) {
