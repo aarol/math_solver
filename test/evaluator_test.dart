@@ -2,7 +2,10 @@ import 'package:math_solver/src/evaluator.dart';
 import 'package:math_solver/src/infix_postfix.dart';
 import 'package:math_solver/src/obj.dart';
 import 'package:math_solver/src/tokenizer.dart';
+import 'package:rational/rational.dart';
 import 'package:test/test.dart';
+
+import 'test_util.dart';
 
 void main() {
   final tokenizer = DefaultTokenizer();
@@ -14,29 +17,14 @@ void main() {
   final evaluator = DefaultEvaluator();
 
   group('evaluate', () {
-    final map = <List<Obj>, String>{
-      postfix(tokenize('1+2')): '3',
-      postfix(tokenize('2 ^ 2 / 2 - 2')): '0',
-      postfix(tokenize('12 / (2 + 2 * 2)')): '2'
+    final map = <List<Obj>, Rational>{
+      postfix(tokenize('1+2')): rs('3'),
+      postfix(tokenize('2 ^ 2 / 2 - 2')): rs('0'),
+      postfix(tokenize('12 / (2 + 2 * 2)')): rs('2'),
     };
     for (var entry in map.entries) {
       test(entry.key, () {
         expect(evaluator.evaluate(entry.key), entry.value);
-      });
-    }
-  });
-
-  group('formatDouble', () {
-    final map = <double, String>{
-      13.25: '13.25',
-      -0.000: '0',
-      2.000: '2',
-      0.30000000004: '0.3',
-    };
-
-    for (var entry in map.entries) {
-      test(entry.key, () {
-        expect(evaluator.formatDouble(entry.key), entry.value);
       });
     }
   });

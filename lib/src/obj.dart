@@ -1,11 +1,12 @@
 import 'package:equatable/equatable.dart';
 import 'package:math_solver/src/obj/tables.dart';
+import 'package:rational/rational.dart';
 import 'dart:math' as math;
 
 import 'util.dart';
 
 enum _Obj {
-  num,
+  number,
   op,
   fun,
   parL,
@@ -34,7 +35,7 @@ abstract class Obj extends Equatable {
     void Function()? undefined,
   }) {
     switch (_type) {
-      case _Obj.num:
+      case _Obj.number:
         return number!(this as Num);
       case _Obj.op:
         return op!(this as Op);
@@ -54,8 +55,8 @@ abstract class Obj extends Equatable {
 }
 
 class Num extends Obj {
-  const Num(this.value) : super(_Obj.num);
-  final double value;
+  const Num(this.value) : super(_Obj.number);
+  final Rational value;
 
   @override
   bool get stringify => true;
@@ -72,13 +73,13 @@ class Op extends Obj {
   Assoc get assoc => operator == Operator.exponent ? Assoc.right : Assoc.left;
 
   static Obj from(String char) {
-    return kObjParseTable[char] ?? Undefined(char);
+    return kParseTable[char] ?? Undefined(char);
   }
 
-  double use(double a, double b) {
-    var fun = kOperationTable[operator]?.call(a, b);
-    if (fun != null) {
-      return fun;
+  Rational use(Rational a, Rational b) {
+    var res = kOperationTable[operator]?.call(a, b);
+    if (res != null) {
+      return res;
     } else {
       throw Exception('No operation found for $operator');
     }
@@ -95,22 +96,15 @@ class Fun extends Obj {
   final Function function;
 
   static Obj from(String char) {
-    return kFunctionTable[char] ?? Undefined(char);
+    return kParseTable[char] ?? Undefined(char);
   }
 
-  double use(double a) {
-    switch (function) {
-      case Function.squareRoot:
-        return math.sqrt(a);
-      case Function.sin:
-        return math.sin(a * degrees2Radians);
-      case Function.cos:
-        return math.cos(a * degrees2Radians);
-      case Function.tan:
-        return math.tan(a * degrees2Radians);
-      default:
-        return 0;
+  Rational use(Rational a) {
+    final res = kFunctionTable[function]?.call(a);
+    if (res != null) {
+      return res;
     }
+    throw UnsupportedError('No use for $function');
   }
 
   @override

@@ -1,27 +1,11 @@
 import 'package:math_solver/src/obj.dart';
 import 'dart:math' as math;
 
-const kFunctionTable = <String, Fun>{
-  'sin': Fun(Function.sin),
-  'cos': Fun(Function.cos),
-  'tan': Fun(Function.tan),
-  'sqrt': Fun(Function.squareRoot),
-};
+import 'package:rational/rational.dart';
 
-final kOperationTable = <Operator, double Function(double a, double b)>{
-  Operator.add: (a, b) => b + a,
-  Operator.substract: (a, b) => b - a,
-  Operator.multiply: (a, b) => b * a,
-  Operator.exponent: (a, b) => math.pow(b, a) as double,
-  Operator.divide: (a, b) {
-    if (a == 0) {
-      throw IntegerDivisionByZeroException();
-    }
-    return b / a;
-  }
-};
+import '../util.dart';
 
-const kObjParseTable = <String, Obj>{
+const kParseTable = <String, Obj>{
   '+': Op(Operator.add),
   '-': Op(Operator.substract),
   '*': Op(Operator.multiply),
@@ -29,6 +13,35 @@ const kObjParseTable = <String, Obj>{
   '^': Op(Operator.exponent),
   '(': ParL(),
   ')': ParR(),
+  'sin': Fun(Function.sin),
+  'cos': Fun(Function.cos),
+  'tan': Fun(Function.tan),
+  'sqrt': Fun(Function.squareRoot),
+};
+
+final kOperationTable = <Operator, Rational Function(Rational a, Rational b)>{
+  Operator.add: (a, b) => b + a,
+  Operator.substract: (a, b) => b - a,
+  Operator.multiply: (a, b) => b * a,
+  Operator.exponent: (a, b) => b.pow(a.toInt()),
+  Operator.divide: (a, b) {
+    if (a == Rational.zero) {
+      throw IntegerDivisionByZeroException();
+    }
+    return b / a;
+  }
+};
+
+final kFunctionTable = <Function, Rational Function(Rational b)>{
+  // TODO: fix this mess
+  Function.squareRoot: (a) =>
+      Rational.parse(math.sqrt(a.toDouble()).toString()),
+  Function.sin: (a) =>
+      Rational.parse(math.sin(a.toDouble() * degrees2Radians).toString()),
+  Function.cos: (a) =>
+      Rational.parse(math.cos(a.toDouble() * degrees2Radians).toString()),
+  Function.tan: (a) =>
+      Rational.parse(math.tan(a.toDouble() * degrees2Radians).toString()),
 };
 
 const kOperatorPrecedenceTable = <Operator, int>{

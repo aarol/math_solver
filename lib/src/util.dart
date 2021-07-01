@@ -1,9 +1,14 @@
+import 'package:rational/rational.dart';
+
 import 'obj.dart';
 import 'dart:math' as math;
 
 const double radians2Degrees = 180.0 / math.pi;
 
 const double degrees2Radians = math.pi / 180.0;
+
+// cannot be final because of parsing ☹️
+final kRationalPi = Rational.parse('3.1415926535897932');
 
 extension IsBool on String {
   bool get isNumeric {

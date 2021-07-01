@@ -1,3 +1,5 @@
+import 'package:rational/rational.dart';
+
 import 'infix_postfix.dart';
 import 'tokenizer.dart';
 
@@ -21,7 +23,7 @@ class Solver {
   final Evaluator evaluator;
   final Map<String, dynamic> replace;
 
-  String solve(String input) {
+  Rational solve(String input) {
     final objects = tokenizer.tokenize(input, replace);
     final postfix = infixToPostfix.infixToPostfix(objects);
     final eval = evaluator.evaluate(postfix);
@@ -31,4 +33,4 @@ class Solver {
 
 const _solver = Solver();
 
-String solve(String input) => _solver.solve(input);
+Rational solve(String input) => _solver.solve(input);
