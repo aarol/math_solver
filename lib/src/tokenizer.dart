@@ -1,7 +1,8 @@
-import 'dart:collection';
 import 'dart:math' as math;
 
+import 'package:math_solver/src/obj/tables.dart';
 import 'package:meta/meta.dart';
+import 'package:rational/rational.dart';
 
 import 'obj.dart';
 import 'util.dart';
@@ -21,79 +22,93 @@ class DefaultTokenizer implements Tokenizer {
 
   @visibleForTesting
   String replace(String input, Map<String, dynamic>? replace) {
-    if (replace == null || replace.isEmpty) return input;
+    replace ??= {'π': math.pi};
     var list = input.split('');
     for (var i = 0; i < list.length; i++) {
       var possibleValue = replace[list[i]];
       if (possibleValue != null) {
-        list[i] = possibleValue;
+        list[i] = possibleValue.toString();
       }
     }
     return list.join();
   }
 
   List<Obj> _tokenize(String input) {
-    final res = Queue<Obj>();
-    final stack = Queue<String>();
+    final output = <Obj>[];
 
-    void clear() {
-      if (stack.isEmpty) {
-        return;
+    var numBuffer = '';
+    var funcBuffer = '';
+
+    void clearNumBuffer() {
+      if (numBuffer.isNotEmpty) {
+        try {
+          var number = Rational.parse(numBuffer);
+          output.add(Num(number));
+        } on FormatException catch (_) {
+          // TODO: Do something here
+          return;
+        }
+        numBuffer = '';
       }
-      // construct number from items in stack
-      final parsedNum = double.tryParse(stack.join());
-      Obj obj;
-      if (parsedNum != null) {
-        obj = Num(parsedNum);
+    }
+
+    void clearFuncBuffer() {
+      if (funcBuffer.isNotEmpty) {
+        var obj = kParseTable[funcBuffer];
+        if (obj != null) {
+          output.add(obj);
+        } else {
+          throw Exception('Cannot tokenize $funcBuffer');
+        }
+        funcBuffer = '';
+      }
+    }
+
+    var iter = input.runes.iterator;
+    while (iter.moveNext()) {
+      var char = iter.currentAsString;
+
+      // is any 1-character-length operator
+      if (kParseTable[char] != null) {
+        clearNumBuffer();
+        clearFuncBuffer();
+        output.add(kParseTable[char]!);
+        continue;
+      }
+
+      if (char.isNumeric) {
+        // is part of a number
+        var buffer = StringBuffer(numBuffer);
+        buffer.write(char);
+        clearFuncBuffer();
+        numBuffer = buffer.toString();
       } else {
-        // num failed to parse, must be a function
-        obj = Fun.from(stack.join());
-      }
-      stack.clear();
-      res.add(obj);
-    }
-
-    void addStack(String char) {
-      // check if char shares type with other items in stack
-      if (stack.isNotEmpty) {
-        final inputNum = char.isNumeric;
-        final stackNum = stack.first.isNumeric;
-        // if not, then clear
-        if (inputNum && !stackNum || !inputNum && stackNum) clear();
-      }
-      stack.add(char);
-    }
-
-    for (var char in input.split('')) {
-      // number or function might be longer than 1 char
-      // add to stack
-      if (char.isNumeric || char.isFunctional) {
-        addStack(char);
-      } else if (char == 'π') {
-        clear();
-        res.add(Num(math.pi));
-      } else if (char == ' ') {
-        // empty space means separation of values
-        // used in postfix form
-        // clear stack
-        clear();
-      } else {
-        // is operator, clear stack
-        clear();
-        res.add(Op.from(char));
+        if (char == ' ') {
+          // empty characters should clear
+          // this is because postfix inputs have spaces to separate numbers
+          clearNumBuffer();
+          clearFuncBuffer();
+        } else {
+          // has to be a part of a function
+          var buffer = StringBuffer(funcBuffer);
+          buffer.write(char);
+          clearNumBuffer();
+          funcBuffer = buffer.toString();
+        }
       }
     }
-    // clear stack to add possible last item
-    clear();
-    return res.toList();
+    clearNumBuffer();
+    clearFuncBuffer();
+    return output;
   }
 
   List<Obj> _clean(List<Obj> input) {
     for (var i = 0; i < input.length; i++) {
-      // first item of the list
-      // -=-=-=-=-
-      // ^
       if (i == 0) {
+        // first item of the list
+        // -=-=-=-=-
+        // ^
+
         //Remove '-' at start of input and reverse value
         //- 2 + 5 -> -2 + 5
         if (input[0] == Op(Operator.substract)) {
@@ -105,20 +120,21 @@ class DefaultTokenizer implements Tokenizer {
         } else if (input[0] == Op(Operator.add)) {
           input.removeAt(0);
         }
+      } else {
         // rest of the list
         // -=-=-=-=-
         //  ^^^^^^^^
-      } else {
+
         //2( -> 2*(
         if (input[i - 1] is Num && input[i] == ParL()) {
           input.insert(i, Op(Operator.multiply));
         }
         // 2π -> 2*π
         // should only happen with pi
-        if (input[i - 1] is Num && input[i] == Num(math.pi)) {
+        if (input[i - 1] is Num && input[i] == Num(kRationalPi)) {
           input.insert(i, Op(Operator.multiply));
         }
-        if (input[i - 1] == Num(math.pi) && input[i] is Num) {
+        if (input[i - 1] == Num(kRationalPi) && input[i] is Num) {
           input.insert(i, Op(Operator.multiply));
         }
         // 2sqrt(9) -> 2*sqrt(9)
