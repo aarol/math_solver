@@ -1,6 +1,9 @@
 import 'package:equatable/equatable.dart';
+import 'package:math_solver/custom.dart';
 import 'package:math_solver/src/obj/tables.dart';
 import 'package:rational/rational.dart';
+
+import 'operator.dart';
 
 enum _Obj {
   number,
@@ -10,10 +13,6 @@ enum _Obj {
   parR,
   undefined,
 }
-
-enum Operator { add, substract, multiply, divide, exponent }
-
-enum Function { squareRoot, sin, tan, cos }
 
 enum Assoc { left, right }
 
@@ -63,24 +62,17 @@ class Num extends Obj {
 
 class Op extends Obj {
   const Op(this.operator) : super(_Obj.op);
-  final Operator operator;
+  final Operators operator;
 
-  int get precedence => kOperatorPrecedenceTable[operator] ?? -1;
+  int get precedence => operator.precedence;
 
-  Assoc get assoc => operator == Operator.exponent ? Assoc.right : Assoc.left;
+  Assoc get assoc => operator == Operators.exponent ? Assoc.right : Assoc.left;
 
   static Obj from(String char) {
     return kParseTable[char] ?? Undefined(char);
   }
 
-  Rational use(Rational a, Rational b) {
-    var res = kOperationTable[operator]?.call(a, b);
-    if (res != null) {
-      return res;
-    } else {
-      throw Exception('No operation found for $operator');
-    }
-  }
+  Rational use(Rational a, Rational b) => operator.call(a, b);
 
   @override
   bool get stringify => true;
@@ -90,19 +82,13 @@ class Op extends Obj {
 
 class Fun extends Obj {
   const Fun(this.function) : super(_Obj.fun);
-  final Function function;
+  final Functions function;
 
   static Obj from(String char) {
     return kParseTable[char] ?? Undefined(char);
   }
 
-  Rational use(Rational a) {
-    final res = kFunctionTable[function]?.call(a);
-    if (res != null) {
-      return res;
-    }
-    throw UnsupportedError('No use for $function');
-  }
+  Rational use(Rational a) => function.call(a);
 
   @override
   bool get stringify => true;
@@ -114,13 +100,13 @@ class ParL extends Obj {
   const ParL() : super(_Obj.parL);
 
   @override
-  String toString() => 'Par(';
+  String toString() => 'Par\'(\'';
 }
 
 class ParR extends Obj {
   const ParR() : super(_Obj.parR);
   @override
-  String toString() => 'Par)';
+  String toString() => 'Par\')\'';
 }
 
 class Undefined extends Obj {

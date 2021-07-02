@@ -39,25 +39,3 @@ bool shouldPop(Op current, Obj last) {
   }
   throw Exception('Cannot compare ${[current, last]}');
 }
-
-extension Math on Rational {
-  Rational squareRoot() {
-    var sqrt = math.sqrt(toDouble());
-    return Rational.parse(sqrt.toString());
-  }
-
-  Rational sin() {
-    var sin = math.sin(toDouble() * degrees2Radians);
-    return Rational.parse(sin.toString());
-  }
-
-  Rational cos() {
-    var cos = math.cos(toDouble() * degrees2Radians);
-    return Rational.parse(cos.toString());
-  }
-
-  Rational tan() {
-    var tan = math.tan(toDouble() * degrees2Radians);
-    return Rational.parse(tan.toString());
-  }
-}

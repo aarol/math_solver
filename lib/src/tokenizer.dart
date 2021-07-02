@@ -5,10 +5,13 @@ import 'package:meta/meta.dart';
 import 'package:rational/rational.dart';
 
 import 'obj.dart';
+import 'operator.dart';
 import 'util.dart';
 
 abstract class Tokenizer {
   List<Obj> tokenize(String input, [Map<String, dynamic> replace = const {}]);
+
+  Map<String, Obj> get parseTable;
 }
 
 class DefaultTokenizer implements Tokenizer {
@@ -56,7 +59,7 @@ class DefaultTokenizer implements Tokenizer {
 
     void clearFuncBuffer() {
       if (funcBuffer.isNotEmpty) {
-        var obj = kParseTable[funcBuffer];
+        var obj = parseTable[funcBuffer];
         if (obj != null) {
           output.add(obj);
         } else {
@@ -113,13 +116,13 @@ class DefaultTokenizer implements Tokenizer {
 
         //Remove '-' at start of input and reverse value
         //- 2 + 5 -> -2 + 5
-        if (input[0] == Op(Operator.substract)) {
+        if (input[0] == Op(Operators.substract)) {
           var val = Num(-(input[1] as Num).value);
           input[1] = val;
           input.removeAt(0);
 
           //+ 2 + 5 -> 2 + 5
-        } else if (input[0] == Op(Operator.add)) {
+        } else if (input[0] == Op(Operators.add)) {
           input.removeAt(0);
         }
       } else {
@@ -129,19 +132,19 @@ class DefaultTokenizer implements Tokenizer {
 
         //2( -> 2*(
         if (input[i - 1] is Num && input[i] == ParL()) {
-          input.insert(i, Op(Operator.multiply));
+          input.insert(i, Op(Operators.multiply));
         }
         // 2π -> 2*π
         // should only happen with pi
         if (input[i - 1] is Num && input[i] == Num(kRationalPi)) {
-          input.insert(i, Op(Operator.multiply));
+          input.insert(i, Op(Operators.multiply));
         }
         if (input[i - 1] == Num(kRationalPi) && input[i] is Num) {
-          input.insert(i, Op(Operator.multiply));
+          input.insert(i, Op(Operators.multiply));
         }
         // 2sqrt(9) -> 2*sqrt(9)
         if (input[i - 1] is Num && input[i] is Fun) {
-          input.insert(i, Op(Operator.multiply));
+          input.insert(i, Op(Operators.multiply));
         }
         // sqrt 1 / 2 -> sqrt(1)/2
         if (input[i - 1] is Fun && input[i] is Num) {
@@ -156,4 +159,10 @@ class DefaultTokenizer implements Tokenizer {
     }
     return input;
   }
+
+  /// Gets every possible function and operator converted to `Obj`
+  ///
+  /// Override this to add your own functions
+  @override
+  Map<String, Obj> get parseTable => kParseTable;
 }

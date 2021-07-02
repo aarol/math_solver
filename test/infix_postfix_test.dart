@@ -1,5 +1,7 @@
+import 'package:math_solver/src/function.dart';
 import 'package:math_solver/src/infix_postfix.dart';
 import 'package:math_solver/src/obj.dart';
+import 'package:math_solver/src/operator.dart';
 import 'package:math_solver/src/tokenizer.dart';
 import 'package:test/test.dart';
 
@@ -17,16 +19,16 @@ void main() {
     tokenize('12/(2+2*2)'): tokenize('12 2 2 2 * + /'),
     tokenize('sin(tan(cos(5)))'): [
       Num(r(5)),
-      Fun(Function.cos),
-      Fun(Function.tan),
-      Fun(Function.sin)
+      Fun(Functions.cos),
+      Fun(Functions.tan),
+      Fun(Functions.sin)
     ],
     tokenize('(1)-634*(1-42)'): tokenize('1 634 1 42 - * -'),
     tokenize('sqrt(4) * 2'): [
       Num(r(4)),
-      Fun(Function.squareRoot),
+      Fun(Functions.squareRoot),
       Num(r(2)),
-      Op(Operator.multiply),
+      Op(Operators.multiply),
     ],
   };
 
@@ -42,9 +44,9 @@ void main() {
     final i = tokenize('sqrt(4) * 2');
     final o = [
       Num(r(4)),
-      Fun(Function.squareRoot),
+      Fun(Functions.squareRoot),
       Num(r(2)),
-      Op(Operator.multiply),
+      Op(Operators.multiply),
     ];
     expect(infixPostfix.infixToPostfix(i), o);
   });
