@@ -32,16 +32,12 @@ final kOperationTable = <Operator, Rational Function(Rational a, Rational b)>{
   }
 };
 
-final kFunctionTable = <Function, Rational Function(Rational b)>{
-  // TODO: fix this mess
-  Function.squareRoot: (a) =>
-      Rational.parse(math.sqrt(a.toDouble()).toString()),
-  Function.sin: (a) =>
-      Rational.parse(math.sin(a.toDouble() * degrees2Radians).toString()),
-  Function.cos: (a) =>
-      Rational.parse(math.cos(a.toDouble() * degrees2Radians).toString()),
-  Function.tan: (a) =>
-      Rational.parse(math.tan(a.toDouble() * degrees2Radians).toString()),
+final kFunctionTable = <Function, Rational Function(Rational)>{
+  // From extension methods in util.dart
+  Function.squareRoot: (a) => a.squareRoot(),
+  Function.sin: (a) => a.sin(),
+  Function.cos: (a) => a.cos(),
+  Function.tan: (a) => a.tan(),
 };
 
 const kOperatorPrecedenceTable = <Operator, int>{

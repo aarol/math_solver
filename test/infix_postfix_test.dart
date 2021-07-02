@@ -1,7 +1,6 @@
 import 'package:math_solver/src/infix_postfix.dart';
 import 'package:math_solver/src/obj.dart';
 import 'package:math_solver/src/tokenizer.dart';
-import 'package:rational/rational.dart';
 import 'package:test/test.dart';
 
 import 'test_util.dart';

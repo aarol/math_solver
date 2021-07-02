@@ -8,7 +8,7 @@ import 'obj.dart';
 import 'util.dart';
 
 abstract class Tokenizer {
-  List<Obj> tokenize(String input, [Map<String, dynamic>? replace]);
+  List<Obj> tokenize(String input, [Map<String, dynamic> replace = const {}]);
 }
 
 class DefaultTokenizer implements Tokenizer {
@@ -22,7 +22,9 @@ class DefaultTokenizer implements Tokenizer {
 
   @visibleForTesting
   String replace(String input, Map<String, dynamic>? replace) {
-    replace ??= {'π': math.pi};
+    // always add π to map
+    replace = Map<String, dynamic>.from(replace ?? {});
+    replace['π'] = math.pi;
     var list = input.split('');
     for (var i = 0; i < list.length; i++) {
       var possibleValue = replace[list[i]];

@@ -1,9 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:math_solver/src/obj/tables.dart';
 import 'package:rational/rational.dart';
-import 'dart:math' as math;
-
-import 'util.dart';
 
 enum _Obj {
   number,
